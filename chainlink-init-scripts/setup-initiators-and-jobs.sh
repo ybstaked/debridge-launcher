@@ -62,7 +62,9 @@ add_jobs() {
     local container_name=$(docker-compose ps | grep $network | awk '{print $1}')
     local apicred=$(docker exec $container_name ls /run/secrets | grep apicredentials)
     docker exec $container_name chainlink admin login --file /run/secrets/$apicred
-    docker exec $container_name chainlink  --json job_specs create /chainlink/submit-job.json > $PWD/chainlink-$network/submit-job-info.json 
+    docker exec $container_name chainlink  --json job_specs create /chainlink/submit-job.json > $PWD/chainlink-$network/submit-job-info.json
+    docker exec $container_name chainlink  --json job_specs create /chainlink/init-server.json > $PWD/chainlink-$network/init-server-info.json
+    docker exec $container_name chainlink  --json job_specs create /chainlink/init-node.json > $PWD/chainlink-$network/init-node-info.json 
 }
 
 echo "Add initiator for Binance Smart Chain"
