@@ -1,6 +1,8 @@
 secrets/*
 chainlink-*/*
 !chainlink-*/submit-job.json
+!chainlink-*/init-server.json
+!chainlink-*/init-node.json
 !chainlink-init-scripts/*.sh
 password.txt
 apicredentials
