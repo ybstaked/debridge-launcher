@@ -1,13 +1,11 @@
 {
-    "watch": [
-        "src",
-        ".env"
-    ],
-    "ext": "js,ts,json",
-    "ignore": [
-        "src/**/*.spec.ts",
-        "src/**/*.test.ts"
-    ],
-    "exec": "ts-node -r tsconfig-paths/register --transpile-only src/index.ts",
-    "delay": 500
+  "ext": "ts js json",
+  "watch": ["src/**/*"],
+  "ignore": [".git", "node_modules/**/node_modules"],
+  "verbose": false,
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "exec": "yarn dev-build-and-start",
+  "delay": 500
 }
