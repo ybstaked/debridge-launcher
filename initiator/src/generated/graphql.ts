@@ -9,6 +9,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  bigint: any;
   numeric: any;
   timestamptz: any;
 };
@@ -45,285 +46,23 @@ export type String_Comparison_Exp = {
   _similar?: Maybe<Scalars['String']>;
 };
 
-/** columns and relationships of "aggregator_chains" */
-export type Aggregator_Chains = {
-  __typename?: 'aggregator_chains';
-  aggregatorChain: Scalars['Int'];
-  chainIdTo: Scalars['Int'];
-  /** An object relationship */
-  supportedChain: Supported_Chains;
-};
-
-/** aggregated selection of "aggregator_chains" */
-export type Aggregator_Chains_Aggregate = {
-  __typename?: 'aggregator_chains_aggregate';
-  aggregate?: Maybe<Aggregator_Chains_Aggregate_Fields>;
-  nodes: Array<Aggregator_Chains>;
-};
-
-/** aggregate fields of "aggregator_chains" */
-export type Aggregator_Chains_Aggregate_Fields = {
-  __typename?: 'aggregator_chains_aggregate_fields';
-  avg?: Maybe<Aggregator_Chains_Avg_Fields>;
-  count?: Maybe<Scalars['Int']>;
-  max?: Maybe<Aggregator_Chains_Max_Fields>;
-  min?: Maybe<Aggregator_Chains_Min_Fields>;
-  stddev?: Maybe<Aggregator_Chains_Stddev_Fields>;
-  stddev_pop?: Maybe<Aggregator_Chains_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Aggregator_Chains_Stddev_Samp_Fields>;
-  sum?: Maybe<Aggregator_Chains_Sum_Fields>;
-  var_pop?: Maybe<Aggregator_Chains_Var_Pop_Fields>;
-  var_samp?: Maybe<Aggregator_Chains_Var_Samp_Fields>;
-  variance?: Maybe<Aggregator_Chains_Variance_Fields>;
-};
-
-
-/** aggregate fields of "aggregator_chains" */
-export type Aggregator_Chains_Aggregate_FieldsCountArgs = {
-  columns?: Maybe<Array<Aggregator_Chains_Select_Column>>;
-  distinct?: Maybe<Scalars['Boolean']>;
-};
-
-/** order by aggregate values of table "aggregator_chains" */
-export type Aggregator_Chains_Aggregate_Order_By = {
-  avg?: Maybe<Aggregator_Chains_Avg_Order_By>;
-  count?: Maybe<Order_By>;
-  max?: Maybe<Aggregator_Chains_Max_Order_By>;
-  min?: Maybe<Aggregator_Chains_Min_Order_By>;
-  stddev?: Maybe<Aggregator_Chains_Stddev_Order_By>;
-  stddev_pop?: Maybe<Aggregator_Chains_Stddev_Pop_Order_By>;
-  stddev_samp?: Maybe<Aggregator_Chains_Stddev_Samp_Order_By>;
-  sum?: Maybe<Aggregator_Chains_Sum_Order_By>;
-  var_pop?: Maybe<Aggregator_Chains_Var_Pop_Order_By>;
-  var_samp?: Maybe<Aggregator_Chains_Var_Samp_Order_By>;
-  variance?: Maybe<Aggregator_Chains_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "aggregator_chains" */
-export type Aggregator_Chains_Arr_Rel_Insert_Input = {
-  data: Array<Aggregator_Chains_Insert_Input>;
-  on_conflict?: Maybe<Aggregator_Chains_On_Conflict>;
-};
-
-/** aggregate avg on columns */
-export type Aggregator_Chains_Avg_Fields = {
-  __typename?: 'aggregator_chains_avg_fields';
-  aggregatorChain?: Maybe<Scalars['Float']>;
-  chainIdTo?: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "aggregator_chains" */
-export type Aggregator_Chains_Avg_Order_By = {
-  aggregatorChain?: Maybe<Order_By>;
-  chainIdTo?: Maybe<Order_By>;
-};
-
-/** Boolean expression to filter rows from the table "aggregator_chains". All fields are combined with a logical 'AND'. */
-export type Aggregator_Chains_Bool_Exp = {
-  _and?: Maybe<Array<Maybe<Aggregator_Chains_Bool_Exp>>>;
-  _not?: Maybe<Aggregator_Chains_Bool_Exp>;
-  _or?: Maybe<Array<Maybe<Aggregator_Chains_Bool_Exp>>>;
-  aggregatorChain?: Maybe<Int_Comparison_Exp>;
-  chainIdTo?: Maybe<Int_Comparison_Exp>;
-  supportedChain?: Maybe<Supported_Chains_Bool_Exp>;
-};
-
-/** unique or primary key constraints on table "aggregator_chains" */
-export enum Aggregator_Chains_Constraint {
-  /** unique or primary key constraint */
-  AggregatorChainsPkey = 'aggregator_chains_pkey'
-}
-
-/** input type for incrementing integer column in table "aggregator_chains" */
-export type Aggregator_Chains_Inc_Input = {
-  aggregatorChain?: Maybe<Scalars['Int']>;
-  chainIdTo?: Maybe<Scalars['Int']>;
-};
-
-/** input type for inserting data into table "aggregator_chains" */
-export type Aggregator_Chains_Insert_Input = {
-  aggregatorChain?: Maybe<Scalars['Int']>;
-  chainIdTo?: Maybe<Scalars['Int']>;
-  supportedChain?: Maybe<Supported_Chains_Obj_Rel_Insert_Input>;
-};
-
-/** aggregate max on columns */
-export type Aggregator_Chains_Max_Fields = {
-  __typename?: 'aggregator_chains_max_fields';
-  aggregatorChain?: Maybe<Scalars['Int']>;
-  chainIdTo?: Maybe<Scalars['Int']>;
-};
-
-/** order by max() on columns of table "aggregator_chains" */
-export type Aggregator_Chains_Max_Order_By = {
-  aggregatorChain?: Maybe<Order_By>;
-  chainIdTo?: Maybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type Aggregator_Chains_Min_Fields = {
-  __typename?: 'aggregator_chains_min_fields';
-  aggregatorChain?: Maybe<Scalars['Int']>;
-  chainIdTo?: Maybe<Scalars['Int']>;
-};
-
-/** order by min() on columns of table "aggregator_chains" */
-export type Aggregator_Chains_Min_Order_By = {
-  aggregatorChain?: Maybe<Order_By>;
-  chainIdTo?: Maybe<Order_By>;
-};
-
-/** response of any mutation on the table "aggregator_chains" */
-export type Aggregator_Chains_Mutation_Response = {
-  __typename?: 'aggregator_chains_mutation_response';
-  /** number of affected rows by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data of the affected rows by the mutation */
-  returning: Array<Aggregator_Chains>;
-};
-
-/** input type for inserting object relation for remote table "aggregator_chains" */
-export type Aggregator_Chains_Obj_Rel_Insert_Input = {
-  data: Aggregator_Chains_Insert_Input;
-  on_conflict?: Maybe<Aggregator_Chains_On_Conflict>;
-};
-
-/** on conflict condition type for table "aggregator_chains" */
-export type Aggregator_Chains_On_Conflict = {
-  constraint: Aggregator_Chains_Constraint;
-  update_columns: Array<Aggregator_Chains_Update_Column>;
-  where?: Maybe<Aggregator_Chains_Bool_Exp>;
-};
-
-/** ordering options when selecting data from "aggregator_chains" */
-export type Aggregator_Chains_Order_By = {
-  aggregatorChain?: Maybe<Order_By>;
-  chainIdTo?: Maybe<Order_By>;
-  supportedChain?: Maybe<Supported_Chains_Order_By>;
-};
-
-/** primary key columns input for table: "aggregator_chains" */
-export type Aggregator_Chains_Pk_Columns_Input = {
-  chainIdTo: Scalars['Int'];
-};
-
-/** select columns of table "aggregator_chains" */
-export enum Aggregator_Chains_Select_Column {
-  /** column name */
-  AggregatorChain = 'aggregatorChain',
-  /** column name */
-  ChainIdTo = 'chainIdTo'
-}
-
-/** input type for updating data in table "aggregator_chains" */
-export type Aggregator_Chains_Set_Input = {
-  aggregatorChain?: Maybe<Scalars['Int']>;
-  chainIdTo?: Maybe<Scalars['Int']>;
-};
-
-/** aggregate stddev on columns */
-export type Aggregator_Chains_Stddev_Fields = {
-  __typename?: 'aggregator_chains_stddev_fields';
-  aggregatorChain?: Maybe<Scalars['Float']>;
-  chainIdTo?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "aggregator_chains" */
-export type Aggregator_Chains_Stddev_Order_By = {
-  aggregatorChain?: Maybe<Order_By>;
-  chainIdTo?: Maybe<Order_By>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Aggregator_Chains_Stddev_Pop_Fields = {
-  __typename?: 'aggregator_chains_stddev_pop_fields';
-  aggregatorChain?: Maybe<Scalars['Float']>;
-  chainIdTo?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "aggregator_chains" */
-export type Aggregator_Chains_Stddev_Pop_Order_By = {
-  aggregatorChain?: Maybe<Order_By>;
-  chainIdTo?: Maybe<Order_By>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Aggregator_Chains_Stddev_Samp_Fields = {
-  __typename?: 'aggregator_chains_stddev_samp_fields';
-  aggregatorChain?: Maybe<Scalars['Float']>;
-  chainIdTo?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "aggregator_chains" */
-export type Aggregator_Chains_Stddev_Samp_Order_By = {
-  aggregatorChain?: Maybe<Order_By>;
-  chainIdTo?: Maybe<Order_By>;
-};
-
-/** aggregate sum on columns */
-export type Aggregator_Chains_Sum_Fields = {
-  __typename?: 'aggregator_chains_sum_fields';
-  aggregatorChain?: Maybe<Scalars['Int']>;
-  chainIdTo?: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "aggregator_chains" */
-export type Aggregator_Chains_Sum_Order_By = {
-  aggregatorChain?: Maybe<Order_By>;
-  chainIdTo?: Maybe<Order_By>;
-};
-
-/** update columns of table "aggregator_chains" */
-export enum Aggregator_Chains_Update_Column {
-  /** column name */
-  AggregatorChain = 'aggregatorChain',
-  /** column name */
-  ChainIdTo = 'chainIdTo'
-}
-
-/** aggregate var_pop on columns */
-export type Aggregator_Chains_Var_Pop_Fields = {
-  __typename?: 'aggregator_chains_var_pop_fields';
-  aggregatorChain?: Maybe<Scalars['Float']>;
-  chainIdTo?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "aggregator_chains" */
-export type Aggregator_Chains_Var_Pop_Order_By = {
-  aggregatorChain?: Maybe<Order_By>;
-  chainIdTo?: Maybe<Order_By>;
-};
-
-/** aggregate var_samp on columns */
-export type Aggregator_Chains_Var_Samp_Fields = {
-  __typename?: 'aggregator_chains_var_samp_fields';
-  aggregatorChain?: Maybe<Scalars['Float']>;
-  chainIdTo?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "aggregator_chains" */
-export type Aggregator_Chains_Var_Samp_Order_By = {
-  aggregatorChain?: Maybe<Order_By>;
-  chainIdTo?: Maybe<Order_By>;
-};
-
-/** aggregate variance on columns */
-export type Aggregator_Chains_Variance_Fields = {
-  __typename?: 'aggregator_chains_variance_fields';
-  aggregatorChain?: Maybe<Scalars['Float']>;
-  chainIdTo?: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "aggregator_chains" */
-export type Aggregator_Chains_Variance_Order_By = {
-  aggregatorChain?: Maybe<Order_By>;
-  chainIdTo?: Maybe<Order_By>;
+/** expression to compare columns of type bigint. All fields are combined with logical 'AND'. */
+export type Bigint_Comparison_Exp = {
+  _eq?: Maybe<Scalars['bigint']>;
+  _gt?: Maybe<Scalars['bigint']>;
+  _gte?: Maybe<Scalars['bigint']>;
+  _in?: Maybe<Array<Scalars['bigint']>>;
+  _is_null?: Maybe<Scalars['Boolean']>;
+  _lt?: Maybe<Scalars['bigint']>;
+  _lte?: Maybe<Scalars['bigint']>;
+  _neq?: Maybe<Scalars['bigint']>;
+  _nin?: Maybe<Array<Scalars['bigint']>>;
 };
 
 /** columns and relationships of "chainlink_configs" */
 export type Chainlink_Configs = {
   __typename?: 'chainlink_configs';
-  chainId: Scalars['Int'];
+  chainId: Scalars['bigint'];
   confirmNewAssetJobId: Scalars['String'];
   cookie: Scalars['String'];
   debridgeAddr: Scalars['String'];
@@ -332,13 +71,10 @@ export type Chainlink_Configs = {
   eiCiSecret: Scalars['String'];
   eiIcAccesskey: Scalars['String'];
   eiIcSecret: Scalars['String'];
-  id: Scalars['Int'];
   network: Scalars['String'];
   provider: Scalars['String'];
   submitJobId: Scalars['String'];
   submitManyJobId: Scalars['String'];
-  /** An object relationship */
-  supported_chain: Supported_Chains;
 };
 
 /** aggregated selection of "chainlink_configs" */
@@ -396,13 +132,11 @@ export type Chainlink_Configs_Arr_Rel_Insert_Input = {
 export type Chainlink_Configs_Avg_Fields = {
   __typename?: 'chainlink_configs_avg_fields';
   chainId?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
 };
 
 /** order by avg() on columns of table "chainlink_configs" */
 export type Chainlink_Configs_Avg_Order_By = {
   chainId?: Maybe<Order_By>;
-  id?: Maybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "chainlink_configs". All fields are combined with a logical 'AND'. */
@@ -410,7 +144,7 @@ export type Chainlink_Configs_Bool_Exp = {
   _and?: Maybe<Array<Maybe<Chainlink_Configs_Bool_Exp>>>;
   _not?: Maybe<Chainlink_Configs_Bool_Exp>;
   _or?: Maybe<Array<Maybe<Chainlink_Configs_Bool_Exp>>>;
-  chainId?: Maybe<Int_Comparison_Exp>;
+  chainId?: Maybe<Bigint_Comparison_Exp>;
   confirmNewAssetJobId?: Maybe<String_Comparison_Exp>;
   cookie?: Maybe<String_Comparison_Exp>;
   debridgeAddr?: Maybe<String_Comparison_Exp>;
@@ -419,12 +153,10 @@ export type Chainlink_Configs_Bool_Exp = {
   eiCiSecret?: Maybe<String_Comparison_Exp>;
   eiIcAccesskey?: Maybe<String_Comparison_Exp>;
   eiIcSecret?: Maybe<String_Comparison_Exp>;
-  id?: Maybe<Int_Comparison_Exp>;
   network?: Maybe<String_Comparison_Exp>;
   provider?: Maybe<String_Comparison_Exp>;
   submitJobId?: Maybe<String_Comparison_Exp>;
   submitManyJobId?: Maybe<String_Comparison_Exp>;
-  supported_chain?: Maybe<Supported_Chains_Bool_Exp>;
 };
 
 /** unique or primary key constraints on table "chainlink_configs" */
@@ -435,13 +167,12 @@ export enum Chainlink_Configs_Constraint {
 
 /** input type for incrementing integer column in table "chainlink_configs" */
 export type Chainlink_Configs_Inc_Input = {
-  chainId?: Maybe<Scalars['Int']>;
-  id?: Maybe<Scalars['Int']>;
+  chainId?: Maybe<Scalars['bigint']>;
 };
 
 /** input type for inserting data into table "chainlink_configs" */
 export type Chainlink_Configs_Insert_Input = {
-  chainId?: Maybe<Scalars['Int']>;
+  chainId?: Maybe<Scalars['bigint']>;
   confirmNewAssetJobId?: Maybe<Scalars['String']>;
   cookie?: Maybe<Scalars['String']>;
   debridgeAddr?: Maybe<Scalars['String']>;
@@ -450,18 +181,16 @@ export type Chainlink_Configs_Insert_Input = {
   eiCiSecret?: Maybe<Scalars['String']>;
   eiIcAccesskey?: Maybe<Scalars['String']>;
   eiIcSecret?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['Int']>;
   network?: Maybe<Scalars['String']>;
   provider?: Maybe<Scalars['String']>;
   submitJobId?: Maybe<Scalars['String']>;
   submitManyJobId?: Maybe<Scalars['String']>;
-  supported_chain?: Maybe<Supported_Chains_Obj_Rel_Insert_Input>;
 };
 
 /** aggregate max on columns */
 export type Chainlink_Configs_Max_Fields = {
   __typename?: 'chainlink_configs_max_fields';
-  chainId?: Maybe<Scalars['Int']>;
+  chainId?: Maybe<Scalars['bigint']>;
   confirmNewAssetJobId?: Maybe<Scalars['String']>;
   cookie?: Maybe<Scalars['String']>;
   debridgeAddr?: Maybe<Scalars['String']>;
@@ -470,7 +199,6 @@ export type Chainlink_Configs_Max_Fields = {
   eiCiSecret?: Maybe<Scalars['String']>;
   eiIcAccesskey?: Maybe<Scalars['String']>;
   eiIcSecret?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['Int']>;
   network?: Maybe<Scalars['String']>;
   provider?: Maybe<Scalars['String']>;
   submitJobId?: Maybe<Scalars['String']>;
@@ -488,7 +216,6 @@ export type Chainlink_Configs_Max_Order_By = {
   eiCiSecret?: Maybe<Order_By>;
   eiIcAccesskey?: Maybe<Order_By>;
   eiIcSecret?: Maybe<Order_By>;
-  id?: Maybe<Order_By>;
   network?: Maybe<Order_By>;
   provider?: Maybe<Order_By>;
   submitJobId?: Maybe<Order_By>;
@@ -498,7 +225,7 @@ export type Chainlink_Configs_Max_Order_By = {
 /** aggregate min on columns */
 export type Chainlink_Configs_Min_Fields = {
   __typename?: 'chainlink_configs_min_fields';
-  chainId?: Maybe<Scalars['Int']>;
+  chainId?: Maybe<Scalars['bigint']>;
   confirmNewAssetJobId?: Maybe<Scalars['String']>;
   cookie?: Maybe<Scalars['String']>;
   debridgeAddr?: Maybe<Scalars['String']>;
@@ -507,7 +234,6 @@ export type Chainlink_Configs_Min_Fields = {
   eiCiSecret?: Maybe<Scalars['String']>;
   eiIcAccesskey?: Maybe<Scalars['String']>;
   eiIcSecret?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['Int']>;
   network?: Maybe<Scalars['String']>;
   provider?: Maybe<Scalars['String']>;
   submitJobId?: Maybe<Scalars['String']>;
@@ -525,7 +251,6 @@ export type Chainlink_Configs_Min_Order_By = {
   eiCiSecret?: Maybe<Order_By>;
   eiIcAccesskey?: Maybe<Order_By>;
   eiIcSecret?: Maybe<Order_By>;
-  id?: Maybe<Order_By>;
   network?: Maybe<Order_By>;
   provider?: Maybe<Order_By>;
   submitJobId?: Maybe<Order_By>;
@@ -565,17 +290,15 @@ export type Chainlink_Configs_Order_By = {
   eiCiSecret?: Maybe<Order_By>;
   eiIcAccesskey?: Maybe<Order_By>;
   eiIcSecret?: Maybe<Order_By>;
-  id?: Maybe<Order_By>;
   network?: Maybe<Order_By>;
   provider?: Maybe<Order_By>;
   submitJobId?: Maybe<Order_By>;
   submitManyJobId?: Maybe<Order_By>;
-  supported_chain?: Maybe<Supported_Chains_Order_By>;
 };
 
 /** primary key columns input for table: "chainlink_configs" */
 export type Chainlink_Configs_Pk_Columns_Input = {
-  id: Scalars['Int'];
+  chainId: Scalars['bigint'];
 };
 
 /** select columns of table "chainlink_configs" */
@@ -599,8 +322,6 @@ export enum Chainlink_Configs_Select_Column {
   /** column name */
   EiIcSecret = 'eiIcSecret',
   /** column name */
-  Id = 'id',
-  /** column name */
   Network = 'network',
   /** column name */
   Provider = 'provider',
@@ -612,7 +333,7 @@ export enum Chainlink_Configs_Select_Column {
 
 /** input type for updating data in table "chainlink_configs" */
 export type Chainlink_Configs_Set_Input = {
-  chainId?: Maybe<Scalars['Int']>;
+  chainId?: Maybe<Scalars['bigint']>;
   confirmNewAssetJobId?: Maybe<Scalars['String']>;
   cookie?: Maybe<Scalars['String']>;
   debridgeAddr?: Maybe<Scalars['String']>;
@@ -621,7 +342,6 @@ export type Chainlink_Configs_Set_Input = {
   eiCiSecret?: Maybe<Scalars['String']>;
   eiIcAccesskey?: Maybe<Scalars['String']>;
   eiIcSecret?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['Int']>;
   network?: Maybe<Scalars['String']>;
   provider?: Maybe<Scalars['String']>;
   submitJobId?: Maybe<Scalars['String']>;
@@ -632,52 +352,44 @@ export type Chainlink_Configs_Set_Input = {
 export type Chainlink_Configs_Stddev_Fields = {
   __typename?: 'chainlink_configs_stddev_fields';
   chainId?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev() on columns of table "chainlink_configs" */
 export type Chainlink_Configs_Stddev_Order_By = {
   chainId?: Maybe<Order_By>;
-  id?: Maybe<Order_By>;
 };
 
 /** aggregate stddev_pop on columns */
 export type Chainlink_Configs_Stddev_Pop_Fields = {
   __typename?: 'chainlink_configs_stddev_pop_fields';
   chainId?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_pop() on columns of table "chainlink_configs" */
 export type Chainlink_Configs_Stddev_Pop_Order_By = {
   chainId?: Maybe<Order_By>;
-  id?: Maybe<Order_By>;
 };
 
 /** aggregate stddev_samp on columns */
 export type Chainlink_Configs_Stddev_Samp_Fields = {
   __typename?: 'chainlink_configs_stddev_samp_fields';
   chainId?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_samp() on columns of table "chainlink_configs" */
 export type Chainlink_Configs_Stddev_Samp_Order_By = {
   chainId?: Maybe<Order_By>;
-  id?: Maybe<Order_By>;
 };
 
 /** aggregate sum on columns */
 export type Chainlink_Configs_Sum_Fields = {
   __typename?: 'chainlink_configs_sum_fields';
-  chainId?: Maybe<Scalars['Int']>;
-  id?: Maybe<Scalars['Int']>;
+  chainId?: Maybe<Scalars['bigint']>;
 };
 
 /** order by sum() on columns of table "chainlink_configs" */
 export type Chainlink_Configs_Sum_Order_By = {
   chainId?: Maybe<Order_By>;
-  id?: Maybe<Order_By>;
 };
 
 /** update columns of table "chainlink_configs" */
@@ -701,8 +413,6 @@ export enum Chainlink_Configs_Update_Column {
   /** column name */
   EiIcSecret = 'eiIcSecret',
   /** column name */
-  Id = 'id',
-  /** column name */
   Network = 'network',
   /** column name */
   Provider = 'provider',
@@ -716,48 +426,42 @@ export enum Chainlink_Configs_Update_Column {
 export type Chainlink_Configs_Var_Pop_Fields = {
   __typename?: 'chainlink_configs_var_pop_fields';
   chainId?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
 };
 
 /** order by var_pop() on columns of table "chainlink_configs" */
 export type Chainlink_Configs_Var_Pop_Order_By = {
   chainId?: Maybe<Order_By>;
-  id?: Maybe<Order_By>;
 };
 
 /** aggregate var_samp on columns */
 export type Chainlink_Configs_Var_Samp_Fields = {
   __typename?: 'chainlink_configs_var_samp_fields';
   chainId?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
 };
 
 /** order by var_samp() on columns of table "chainlink_configs" */
 export type Chainlink_Configs_Var_Samp_Order_By = {
   chainId?: Maybe<Order_By>;
-  id?: Maybe<Order_By>;
 };
 
 /** aggregate variance on columns */
 export type Chainlink_Configs_Variance_Fields = {
   __typename?: 'chainlink_configs_variance_fields';
   chainId?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
 };
 
 /** order by variance() on columns of table "chainlink_configs" */
 export type Chainlink_Configs_Variance_Order_By = {
   chainId?: Maybe<Order_By>;
-  id?: Maybe<Order_By>;
+};
+
+export type Get_Created_Submissions_By_Confirmation_Chain_Id_Args = {
+  in_confirmation_chain_id?: Maybe<Scalars['bigint']>;
 };
 
 /** mutation root */
 export type Mutation_Root = {
   __typename?: 'mutation_root';
-  /** delete data from the table: "aggregator_chains" */
-  delete_aggregator_chains?: Maybe<Aggregator_Chains_Mutation_Response>;
-  /** delete single row from the table: "aggregator_chains" */
-  delete_aggregator_chains_by_pk?: Maybe<Aggregator_Chains>;
   /** delete data from the table: "chainlink_configs" */
   delete_chainlink_configs?: Maybe<Chainlink_Configs_Mutation_Response>;
   /** delete single row from the table: "chainlink_configs" */
@@ -770,10 +474,6 @@ export type Mutation_Root = {
   delete_supported_chains?: Maybe<Supported_Chains_Mutation_Response>;
   /** delete single row from the table: "supported_chains" */
   delete_supported_chains_by_pk?: Maybe<Supported_Chains>;
-  /** insert data into the table: "aggregator_chains" */
-  insert_aggregator_chains?: Maybe<Aggregator_Chains_Mutation_Response>;
-  /** insert a single row into the table: "aggregator_chains" */
-  insert_aggregator_chains_one?: Maybe<Aggregator_Chains>;
   /** insert data into the table: "chainlink_configs" */
   insert_chainlink_configs?: Maybe<Chainlink_Configs_Mutation_Response>;
   /** insert a single row into the table: "chainlink_configs" */
@@ -786,10 +486,6 @@ export type Mutation_Root = {
   insert_supported_chains?: Maybe<Supported_Chains_Mutation_Response>;
   /** insert a single row into the table: "supported_chains" */
   insert_supported_chains_one?: Maybe<Supported_Chains>;
-  /** update data of the table: "aggregator_chains" */
-  update_aggregator_chains?: Maybe<Aggregator_Chains_Mutation_Response>;
-  /** update single row of the table: "aggregator_chains" */
-  update_aggregator_chains_by_pk?: Maybe<Aggregator_Chains>;
   /** update data of the table: "chainlink_configs" */
   update_chainlink_configs?: Maybe<Chainlink_Configs_Mutation_Response>;
   /** update single row of the table: "chainlink_configs" */
@@ -806,18 +502,6 @@ export type Mutation_Root = {
 
 
 /** mutation root */
-export type Mutation_RootDelete_Aggregator_ChainsArgs = {
-  where: Aggregator_Chains_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Aggregator_Chains_By_PkArgs = {
-  chainIdTo: Scalars['Int'];
-};
-
-
-/** mutation root */
 export type Mutation_RootDelete_Chainlink_ConfigsArgs = {
   where: Chainlink_Configs_Bool_Exp;
 };
@@ -825,7 +509,7 @@ export type Mutation_RootDelete_Chainlink_ConfigsArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_Chainlink_Configs_By_PkArgs = {
-  id: Scalars['Int'];
+  chainId: Scalars['bigint'];
 };
 
 
@@ -849,21 +533,7 @@ export type Mutation_RootDelete_Supported_ChainsArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_Supported_Chains_By_PkArgs = {
-  chainId: Scalars['Int'];
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Aggregator_ChainsArgs = {
-  objects: Array<Aggregator_Chains_Insert_Input>;
-  on_conflict?: Maybe<Aggregator_Chains_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Aggregator_Chains_OneArgs = {
-  object: Aggregator_Chains_Insert_Input;
-  on_conflict?: Maybe<Aggregator_Chains_On_Conflict>;
+  chainId: Scalars['bigint'];
 };
 
 
@@ -906,22 +576,6 @@ export type Mutation_RootInsert_Supported_ChainsArgs = {
 export type Mutation_RootInsert_Supported_Chains_OneArgs = {
   object: Supported_Chains_Insert_Input;
   on_conflict?: Maybe<Supported_Chains_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Aggregator_ChainsArgs = {
-  _inc?: Maybe<Aggregator_Chains_Inc_Input>;
-  _set?: Maybe<Aggregator_Chains_Set_Input>;
-  where: Aggregator_Chains_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Aggregator_Chains_By_PkArgs = {
-  _inc?: Maybe<Aggregator_Chains_Inc_Input>;
-  _set?: Maybe<Aggregator_Chains_Set_Input>;
-  pk_columns: Aggregator_Chains_Pk_Columns_Input;
 };
 
 
@@ -1004,18 +658,16 @@ export enum Order_By {
 /** query root */
 export type Query_Root = {
   __typename?: 'query_root';
-  /** fetch data from the table: "aggregator_chains" */
-  aggregator_chains: Array<Aggregator_Chains>;
-  /** fetch aggregated fields from the table: "aggregator_chains" */
-  aggregator_chains_aggregate: Aggregator_Chains_Aggregate;
-  /** fetch data from the table: "aggregator_chains" using primary key columns */
-  aggregator_chains_by_pk?: Maybe<Aggregator_Chains>;
   /** fetch data from the table: "chainlink_configs" */
   chainlink_configs: Array<Chainlink_Configs>;
   /** fetch aggregated fields from the table: "chainlink_configs" */
   chainlink_configs_aggregate: Chainlink_Configs_Aggregate;
   /** fetch data from the table: "chainlink_configs" using primary key columns */
   chainlink_configs_by_pk?: Maybe<Chainlink_Configs>;
+  /** execute function "get_created_submissions_by_confirmation_chain_id" which returns "submissions" */
+  get_created_submissions_by_confirmation_chain_id: Array<Submissions>;
+  /** execute function "get_created_submissions_by_confirmation_chain_id" and query aggregates on result of table type "submissions" */
+  get_created_submissions_by_confirmation_chain_id_aggregate: Submissions_Aggregate;
   /** fetch data from the table: "submissions" */
   submissions: Array<Submissions>;
   /** fetch aggregated fields from the table: "submissions" */
@@ -1028,32 +680,6 @@ export type Query_Root = {
   supported_chains_aggregate: Supported_Chains_Aggregate;
   /** fetch data from the table: "supported_chains" using primary key columns */
   supported_chains_by_pk?: Maybe<Supported_Chains>;
-};
-
-
-/** query root */
-export type Query_RootAggregator_ChainsArgs = {
-  distinct_on?: Maybe<Array<Aggregator_Chains_Select_Column>>;
-  limit?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  order_by?: Maybe<Array<Aggregator_Chains_Order_By>>;
-  where?: Maybe<Aggregator_Chains_Bool_Exp>;
-};
-
-
-/** query root */
-export type Query_RootAggregator_Chains_AggregateArgs = {
-  distinct_on?: Maybe<Array<Aggregator_Chains_Select_Column>>;
-  limit?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  order_by?: Maybe<Array<Aggregator_Chains_Order_By>>;
-  where?: Maybe<Aggregator_Chains_Bool_Exp>;
-};
-
-
-/** query root */
-export type Query_RootAggregator_Chains_By_PkArgs = {
-  chainIdTo: Scalars['Int'];
 };
 
 
@@ -1079,7 +705,29 @@ export type Query_RootChainlink_Configs_AggregateArgs = {
 
 /** query root */
 export type Query_RootChainlink_Configs_By_PkArgs = {
-  id: Scalars['Int'];
+  chainId: Scalars['bigint'];
+};
+
+
+/** query root */
+export type Query_RootGet_Created_Submissions_By_Confirmation_Chain_IdArgs = {
+  args: Get_Created_Submissions_By_Confirmation_Chain_Id_Args;
+  distinct_on?: Maybe<Array<Submissions_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Submissions_Order_By>>;
+  where?: Maybe<Submissions_Bool_Exp>;
+};
+
+
+/** query root */
+export type Query_RootGet_Created_Submissions_By_Confirmation_Chain_Id_AggregateArgs = {
+  args: Get_Created_Submissions_By_Confirmation_Chain_Id_Args;
+  distinct_on?: Maybe<Array<Submissions_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Submissions_Order_By>>;
+  where?: Maybe<Submissions_Bool_Exp>;
 };
 
 
@@ -1131,7 +779,7 @@ export type Query_RootSupported_Chains_AggregateArgs = {
 
 /** query root */
 export type Query_RootSupported_Chains_By_PkArgs = {
-  chainId: Scalars['Int'];
+  chainId: Scalars['bigint'];
 };
 
 /** columns and relationships of "submissions" */
@@ -1139,6 +787,7 @@ export type Submissions = {
   __typename?: 'submissions';
   amount: Scalars['numeric'];
   chainFrom: Scalars['Int'];
+  chainTo: Scalars['Int'];
   createdAt: Scalars['timestamptz'];
   debridgeId: Scalars['String'];
   id: Scalars['Int'];
@@ -1205,6 +854,7 @@ export type Submissions_Avg_Fields = {
   __typename?: 'submissions_avg_fields';
   amount?: Maybe<Scalars['Float']>;
   chainFrom?: Maybe<Scalars['Float']>;
+  chainTo?: Maybe<Scalars['Float']>;
   id?: Maybe<Scalars['Float']>;
   status?: Maybe<Scalars['Float']>;
 };
@@ -1213,6 +863,7 @@ export type Submissions_Avg_Fields = {
 export type Submissions_Avg_Order_By = {
   amount?: Maybe<Order_By>;
   chainFrom?: Maybe<Order_By>;
+  chainTo?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   status?: Maybe<Order_By>;
 };
@@ -1224,6 +875,7 @@ export type Submissions_Bool_Exp = {
   _or?: Maybe<Array<Maybe<Submissions_Bool_Exp>>>;
   amount?: Maybe<Numeric_Comparison_Exp>;
   chainFrom?: Maybe<Int_Comparison_Exp>;
+  chainTo?: Maybe<Int_Comparison_Exp>;
   createdAt?: Maybe<Timestamptz_Comparison_Exp>;
   debridgeId?: Maybe<String_Comparison_Exp>;
   id?: Maybe<Int_Comparison_Exp>;
@@ -1246,6 +898,7 @@ export enum Submissions_Constraint {
 export type Submissions_Inc_Input = {
   amount?: Maybe<Scalars['numeric']>;
   chainFrom?: Maybe<Scalars['Int']>;
+  chainTo?: Maybe<Scalars['Int']>;
   id?: Maybe<Scalars['Int']>;
   status?: Maybe<Scalars['Int']>;
 };
@@ -1254,6 +907,7 @@ export type Submissions_Inc_Input = {
 export type Submissions_Insert_Input = {
   amount?: Maybe<Scalars['numeric']>;
   chainFrom?: Maybe<Scalars['Int']>;
+  chainTo?: Maybe<Scalars['Int']>;
   createdAt?: Maybe<Scalars['timestamptz']>;
   debridgeId?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['Int']>;
@@ -1269,6 +923,7 @@ export type Submissions_Max_Fields = {
   __typename?: 'submissions_max_fields';
   amount?: Maybe<Scalars['numeric']>;
   chainFrom?: Maybe<Scalars['Int']>;
+  chainTo?: Maybe<Scalars['Int']>;
   createdAt?: Maybe<Scalars['timestamptz']>;
   debridgeId?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['Int']>;
@@ -1283,6 +938,7 @@ export type Submissions_Max_Fields = {
 export type Submissions_Max_Order_By = {
   amount?: Maybe<Order_By>;
   chainFrom?: Maybe<Order_By>;
+  chainTo?: Maybe<Order_By>;
   createdAt?: Maybe<Order_By>;
   debridgeId?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
@@ -1298,6 +954,7 @@ export type Submissions_Min_Fields = {
   __typename?: 'submissions_min_fields';
   amount?: Maybe<Scalars['numeric']>;
   chainFrom?: Maybe<Scalars['Int']>;
+  chainTo?: Maybe<Scalars['Int']>;
   createdAt?: Maybe<Scalars['timestamptz']>;
   debridgeId?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['Int']>;
@@ -1312,6 +969,7 @@ export type Submissions_Min_Fields = {
 export type Submissions_Min_Order_By = {
   amount?: Maybe<Order_By>;
   chainFrom?: Maybe<Order_By>;
+  chainTo?: Maybe<Order_By>;
   createdAt?: Maybe<Order_By>;
   debridgeId?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
@@ -1348,6 +1006,7 @@ export type Submissions_On_Conflict = {
 export type Submissions_Order_By = {
   amount?: Maybe<Order_By>;
   chainFrom?: Maybe<Order_By>;
+  chainTo?: Maybe<Order_By>;
   createdAt?: Maybe<Order_By>;
   debridgeId?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
@@ -1370,6 +1029,8 @@ export enum Submissions_Select_Column {
   /** column name */
   ChainFrom = 'chainFrom',
   /** column name */
+  ChainTo = 'chainTo',
+  /** column name */
   CreatedAt = 'createdAt',
   /** column name */
   DebridgeId = 'debridgeId',
@@ -1391,6 +1052,7 @@ export enum Submissions_Select_Column {
 export type Submissions_Set_Input = {
   amount?: Maybe<Scalars['numeric']>;
   chainFrom?: Maybe<Scalars['Int']>;
+  chainTo?: Maybe<Scalars['Int']>;
   createdAt?: Maybe<Scalars['timestamptz']>;
   debridgeId?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['Int']>;
@@ -1406,6 +1068,7 @@ export type Submissions_Stddev_Fields = {
   __typename?: 'submissions_stddev_fields';
   amount?: Maybe<Scalars['Float']>;
   chainFrom?: Maybe<Scalars['Float']>;
+  chainTo?: Maybe<Scalars['Float']>;
   id?: Maybe<Scalars['Float']>;
   status?: Maybe<Scalars['Float']>;
 };
@@ -1414,6 +1077,7 @@ export type Submissions_Stddev_Fields = {
 export type Submissions_Stddev_Order_By = {
   amount?: Maybe<Order_By>;
   chainFrom?: Maybe<Order_By>;
+  chainTo?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   status?: Maybe<Order_By>;
 };
@@ -1423,6 +1087,7 @@ export type Submissions_Stddev_Pop_Fields = {
   __typename?: 'submissions_stddev_pop_fields';
   amount?: Maybe<Scalars['Float']>;
   chainFrom?: Maybe<Scalars['Float']>;
+  chainTo?: Maybe<Scalars['Float']>;
   id?: Maybe<Scalars['Float']>;
   status?: Maybe<Scalars['Float']>;
 };
@@ -1431,6 +1096,7 @@ export type Submissions_Stddev_Pop_Fields = {
 export type Submissions_Stddev_Pop_Order_By = {
   amount?: Maybe<Order_By>;
   chainFrom?: Maybe<Order_By>;
+  chainTo?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   status?: Maybe<Order_By>;
 };
@@ -1440,6 +1106,7 @@ export type Submissions_Stddev_Samp_Fields = {
   __typename?: 'submissions_stddev_samp_fields';
   amount?: Maybe<Scalars['Float']>;
   chainFrom?: Maybe<Scalars['Float']>;
+  chainTo?: Maybe<Scalars['Float']>;
   id?: Maybe<Scalars['Float']>;
   status?: Maybe<Scalars['Float']>;
 };
@@ -1448,6 +1115,7 @@ export type Submissions_Stddev_Samp_Fields = {
 export type Submissions_Stddev_Samp_Order_By = {
   amount?: Maybe<Order_By>;
   chainFrom?: Maybe<Order_By>;
+  chainTo?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   status?: Maybe<Order_By>;
 };
@@ -1457,6 +1125,7 @@ export type Submissions_Sum_Fields = {
   __typename?: 'submissions_sum_fields';
   amount?: Maybe<Scalars['numeric']>;
   chainFrom?: Maybe<Scalars['Int']>;
+  chainTo?: Maybe<Scalars['Int']>;
   id?: Maybe<Scalars['Int']>;
   status?: Maybe<Scalars['Int']>;
 };
@@ -1465,6 +1134,7 @@ export type Submissions_Sum_Fields = {
 export type Submissions_Sum_Order_By = {
   amount?: Maybe<Order_By>;
   chainFrom?: Maybe<Order_By>;
+  chainTo?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   status?: Maybe<Order_By>;
 };
@@ -1475,6 +1145,8 @@ export enum Submissions_Update_Column {
   Amount = 'amount',
   /** column name */
   ChainFrom = 'chainFrom',
+  /** column name */
+  ChainTo = 'chainTo',
   /** column name */
   CreatedAt = 'createdAt',
   /** column name */
@@ -1498,6 +1170,7 @@ export type Submissions_Var_Pop_Fields = {
   __typename?: 'submissions_var_pop_fields';
   amount?: Maybe<Scalars['Float']>;
   chainFrom?: Maybe<Scalars['Float']>;
+  chainTo?: Maybe<Scalars['Float']>;
   id?: Maybe<Scalars['Float']>;
   status?: Maybe<Scalars['Float']>;
 };
@@ -1506,6 +1179,7 @@ export type Submissions_Var_Pop_Fields = {
 export type Submissions_Var_Pop_Order_By = {
   amount?: Maybe<Order_By>;
   chainFrom?: Maybe<Order_By>;
+  chainTo?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   status?: Maybe<Order_By>;
 };
@@ -1515,6 +1189,7 @@ export type Submissions_Var_Samp_Fields = {
   __typename?: 'submissions_var_samp_fields';
   amount?: Maybe<Scalars['Float']>;
   chainFrom?: Maybe<Scalars['Float']>;
+  chainTo?: Maybe<Scalars['Float']>;
   id?: Maybe<Scalars['Float']>;
   status?: Maybe<Scalars['Float']>;
 };
@@ -1523,6 +1198,7 @@ export type Submissions_Var_Samp_Fields = {
 export type Submissions_Var_Samp_Order_By = {
   amount?: Maybe<Order_By>;
   chainFrom?: Maybe<Order_By>;
+  chainTo?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   status?: Maybe<Order_By>;
 };
@@ -1532,6 +1208,7 @@ export type Submissions_Variance_Fields = {
   __typename?: 'submissions_variance_fields';
   amount?: Maybe<Scalars['Float']>;
   chainFrom?: Maybe<Scalars['Float']>;
+  chainTo?: Maybe<Scalars['Float']>;
   id?: Maybe<Scalars['Float']>;
   status?: Maybe<Scalars['Float']>;
 };
@@ -1540,6 +1217,7 @@ export type Submissions_Variance_Fields = {
 export type Submissions_Variance_Order_By = {
   amount?: Maybe<Order_By>;
   chainFrom?: Maybe<Order_By>;
+  chainTo?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   status?: Maybe<Order_By>;
 };
@@ -1547,18 +1225,16 @@ export type Submissions_Variance_Order_By = {
 /** subscription root */
 export type Subscription_Root = {
   __typename?: 'subscription_root';
-  /** fetch data from the table: "aggregator_chains" */
-  aggregator_chains: Array<Aggregator_Chains>;
-  /** fetch aggregated fields from the table: "aggregator_chains" */
-  aggregator_chains_aggregate: Aggregator_Chains_Aggregate;
-  /** fetch data from the table: "aggregator_chains" using primary key columns */
-  aggregator_chains_by_pk?: Maybe<Aggregator_Chains>;
   /** fetch data from the table: "chainlink_configs" */
   chainlink_configs: Array<Chainlink_Configs>;
   /** fetch aggregated fields from the table: "chainlink_configs" */
   chainlink_configs_aggregate: Chainlink_Configs_Aggregate;
   /** fetch data from the table: "chainlink_configs" using primary key columns */
   chainlink_configs_by_pk?: Maybe<Chainlink_Configs>;
+  /** execute function "get_created_submissions_by_confirmation_chain_id" which returns "submissions" */
+  get_created_submissions_by_confirmation_chain_id: Array<Submissions>;
+  /** execute function "get_created_submissions_by_confirmation_chain_id" and query aggregates on result of table type "submissions" */
+  get_created_submissions_by_confirmation_chain_id_aggregate: Submissions_Aggregate;
   /** fetch data from the table: "submissions" */
   submissions: Array<Submissions>;
   /** fetch aggregated fields from the table: "submissions" */
@@ -1571,32 +1247,6 @@ export type Subscription_Root = {
   supported_chains_aggregate: Supported_Chains_Aggregate;
   /** fetch data from the table: "supported_chains" using primary key columns */
   supported_chains_by_pk?: Maybe<Supported_Chains>;
-};
-
-
-/** subscription root */
-export type Subscription_RootAggregator_ChainsArgs = {
-  distinct_on?: Maybe<Array<Aggregator_Chains_Select_Column>>;
-  limit?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  order_by?: Maybe<Array<Aggregator_Chains_Order_By>>;
-  where?: Maybe<Aggregator_Chains_Bool_Exp>;
-};
-
-
-/** subscription root */
-export type Subscription_RootAggregator_Chains_AggregateArgs = {
-  distinct_on?: Maybe<Array<Aggregator_Chains_Select_Column>>;
-  limit?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  order_by?: Maybe<Array<Aggregator_Chains_Order_By>>;
-  where?: Maybe<Aggregator_Chains_Bool_Exp>;
-};
-
-
-/** subscription root */
-export type Subscription_RootAggregator_Chains_By_PkArgs = {
-  chainIdTo: Scalars['Int'];
 };
 
 
@@ -1622,7 +1272,29 @@ export type Subscription_RootChainlink_Configs_AggregateArgs = {
 
 /** subscription root */
 export type Subscription_RootChainlink_Configs_By_PkArgs = {
-  id: Scalars['Int'];
+  chainId: Scalars['bigint'];
+};
+
+
+/** subscription root */
+export type Subscription_RootGet_Created_Submissions_By_Confirmation_Chain_IdArgs = {
+  args: Get_Created_Submissions_By_Confirmation_Chain_Id_Args;
+  distinct_on?: Maybe<Array<Submissions_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Submissions_Order_By>>;
+  where?: Maybe<Submissions_Bool_Exp>;
+};
+
+
+/** subscription root */
+export type Subscription_RootGet_Created_Submissions_By_Confirmation_Chain_Id_AggregateArgs = {
+  args: Get_Created_Submissions_By_Confirmation_Chain_Id_Args;
+  distinct_on?: Maybe<Array<Submissions_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Submissions_Order_By>>;
+  where?: Maybe<Submissions_Bool_Exp>;
 };
 
 
@@ -1674,39 +1346,19 @@ export type Subscription_RootSupported_Chains_AggregateArgs = {
 
 /** subscription root */
 export type Subscription_RootSupported_Chains_By_PkArgs = {
-  chainId: Scalars['Int'];
+  chainId: Scalars['bigint'];
 };
 
 /** columns and relationships of "supported_chains" */
 export type Supported_Chains = {
   __typename?: 'supported_chains';
-  chainId: Scalars['Int'];
-  /** An array relationship */
-  chainlinkConfigs: Array<Chainlink_Configs>;
-  /** An aggregated array relationship */
-  chainlinkConfigs_aggregate: Chainlink_Configs_Aggregate;
+  chainId: Scalars['bigint'];
+  /** An object relationship */
+  config?: Maybe<Chainlink_Configs>;
+  /** Номер блокчейна в сети (eth, etc), куда мы делаем перевод. Куда мы агрегируем подтверждения. */
+  confirmationChainId?: Maybe<Scalars['bigint']>;
   latestBlock: Scalars['Int'];
   network: Scalars['String'];
-};
-
-
-/** columns and relationships of "supported_chains" */
-export type Supported_ChainsChainlinkConfigsArgs = {
-  distinct_on?: Maybe<Array<Chainlink_Configs_Select_Column>>;
-  limit?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  order_by?: Maybe<Array<Chainlink_Configs_Order_By>>;
-  where?: Maybe<Chainlink_Configs_Bool_Exp>;
-};
-
-
-/** columns and relationships of "supported_chains" */
-export type Supported_ChainsChainlinkConfigs_AggregateArgs = {
-  distinct_on?: Maybe<Array<Chainlink_Configs_Select_Column>>;
-  limit?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  order_by?: Maybe<Array<Chainlink_Configs_Order_By>>;
-  where?: Maybe<Chainlink_Configs_Bool_Exp>;
 };
 
 /** aggregated selection of "supported_chains" */
@@ -1764,12 +1416,14 @@ export type Supported_Chains_Arr_Rel_Insert_Input = {
 export type Supported_Chains_Avg_Fields = {
   __typename?: 'supported_chains_avg_fields';
   chainId?: Maybe<Scalars['Float']>;
+  confirmationChainId?: Maybe<Scalars['Float']>;
   latestBlock?: Maybe<Scalars['Float']>;
 };
 
 /** order by avg() on columns of table "supported_chains" */
 export type Supported_Chains_Avg_Order_By = {
   chainId?: Maybe<Order_By>;
+  confirmationChainId?: Maybe<Order_By>;
   latestBlock?: Maybe<Order_By>;
 };
 
@@ -1778,8 +1432,9 @@ export type Supported_Chains_Bool_Exp = {
   _and?: Maybe<Array<Maybe<Supported_Chains_Bool_Exp>>>;
   _not?: Maybe<Supported_Chains_Bool_Exp>;
   _or?: Maybe<Array<Maybe<Supported_Chains_Bool_Exp>>>;
-  chainId?: Maybe<Int_Comparison_Exp>;
-  chainlinkConfigs?: Maybe<Chainlink_Configs_Bool_Exp>;
+  chainId?: Maybe<Bigint_Comparison_Exp>;
+  config?: Maybe<Chainlink_Configs_Bool_Exp>;
+  confirmationChainId?: Maybe<Bigint_Comparison_Exp>;
   latestBlock?: Maybe<Int_Comparison_Exp>;
   network?: Maybe<String_Comparison_Exp>;
 };
@@ -1787,21 +1442,21 @@ export type Supported_Chains_Bool_Exp = {
 /** unique or primary key constraints on table "supported_chains" */
 export enum Supported_Chains_Constraint {
   /** unique or primary key constraint */
-  PkE27d3238e9e6b29429b425ff993 = 'PK_e27d3238e9e6b29429b425ff993',
-  /** unique or primary key constraint */
-  UqE27d3238e9e6b29429b425ff993 = 'UQ_e27d3238e9e6b29429b425ff993'
+  SupportedChainsPkey = 'supported_chains_pkey'
 }
 
 /** input type for incrementing integer column in table "supported_chains" */
 export type Supported_Chains_Inc_Input = {
-  chainId?: Maybe<Scalars['Int']>;
+  chainId?: Maybe<Scalars['bigint']>;
+  confirmationChainId?: Maybe<Scalars['bigint']>;
   latestBlock?: Maybe<Scalars['Int']>;
 };
 
 /** input type for inserting data into table "supported_chains" */
 export type Supported_Chains_Insert_Input = {
-  chainId?: Maybe<Scalars['Int']>;
-  chainlinkConfigs?: Maybe<Chainlink_Configs_Arr_Rel_Insert_Input>;
+  chainId?: Maybe<Scalars['bigint']>;
+  config?: Maybe<Chainlink_Configs_Obj_Rel_Insert_Input>;
+  confirmationChainId?: Maybe<Scalars['bigint']>;
   latestBlock?: Maybe<Scalars['Int']>;
   network?: Maybe<Scalars['String']>;
 };
@@ -1809,7 +1464,8 @@ export type Supported_Chains_Insert_Input = {
 /** aggregate max on columns */
 export type Supported_Chains_Max_Fields = {
   __typename?: 'supported_chains_max_fields';
-  chainId?: Maybe<Scalars['Int']>;
+  chainId?: Maybe<Scalars['bigint']>;
+  confirmationChainId?: Maybe<Scalars['bigint']>;
   latestBlock?: Maybe<Scalars['Int']>;
   network?: Maybe<Scalars['String']>;
 };
@@ -1817,6 +1473,7 @@ export type Supported_Chains_Max_Fields = {
 /** order by max() on columns of table "supported_chains" */
 export type Supported_Chains_Max_Order_By = {
   chainId?: Maybe<Order_By>;
+  confirmationChainId?: Maybe<Order_By>;
   latestBlock?: Maybe<Order_By>;
   network?: Maybe<Order_By>;
 };
@@ -1824,7 +1481,8 @@ export type Supported_Chains_Max_Order_By = {
 /** aggregate min on columns */
 export type Supported_Chains_Min_Fields = {
   __typename?: 'supported_chains_min_fields';
-  chainId?: Maybe<Scalars['Int']>;
+  chainId?: Maybe<Scalars['bigint']>;
+  confirmationChainId?: Maybe<Scalars['bigint']>;
   latestBlock?: Maybe<Scalars['Int']>;
   network?: Maybe<Scalars['String']>;
 };
@@ -1832,6 +1490,7 @@ export type Supported_Chains_Min_Fields = {
 /** order by min() on columns of table "supported_chains" */
 export type Supported_Chains_Min_Order_By = {
   chainId?: Maybe<Order_By>;
+  confirmationChainId?: Maybe<Order_By>;
   latestBlock?: Maybe<Order_By>;
   network?: Maybe<Order_By>;
 };
@@ -1861,20 +1520,23 @@ export type Supported_Chains_On_Conflict = {
 /** ordering options when selecting data from "supported_chains" */
 export type Supported_Chains_Order_By = {
   chainId?: Maybe<Order_By>;
-  chainlinkConfigs_aggregate?: Maybe<Chainlink_Configs_Aggregate_Order_By>;
+  config?: Maybe<Chainlink_Configs_Order_By>;
+  confirmationChainId?: Maybe<Order_By>;
   latestBlock?: Maybe<Order_By>;
   network?: Maybe<Order_By>;
 };
 
 /** primary key columns input for table: "supported_chains" */
 export type Supported_Chains_Pk_Columns_Input = {
-  chainId: Scalars['Int'];
+  chainId: Scalars['bigint'];
 };
 
 /** select columns of table "supported_chains" */
 export enum Supported_Chains_Select_Column {
   /** column name */
   ChainId = 'chainId',
+  /** column name */
+  ConfirmationChainId = 'confirmationChainId',
   /** column name */
   LatestBlock = 'latestBlock',
   /** column name */
@@ -1883,7 +1545,8 @@ export enum Supported_Chains_Select_Column {
 
 /** input type for updating data in table "supported_chains" */
 export type Supported_Chains_Set_Input = {
-  chainId?: Maybe<Scalars['Int']>;
+  chainId?: Maybe<Scalars['bigint']>;
+  confirmationChainId?: Maybe<Scalars['bigint']>;
   latestBlock?: Maybe<Scalars['Int']>;
   network?: Maybe<Scalars['String']>;
 };
@@ -1892,12 +1555,14 @@ export type Supported_Chains_Set_Input = {
 export type Supported_Chains_Stddev_Fields = {
   __typename?: 'supported_chains_stddev_fields';
   chainId?: Maybe<Scalars['Float']>;
+  confirmationChainId?: Maybe<Scalars['Float']>;
   latestBlock?: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev() on columns of table "supported_chains" */
 export type Supported_Chains_Stddev_Order_By = {
   chainId?: Maybe<Order_By>;
+  confirmationChainId?: Maybe<Order_By>;
   latestBlock?: Maybe<Order_By>;
 };
 
@@ -1905,12 +1570,14 @@ export type Supported_Chains_Stddev_Order_By = {
 export type Supported_Chains_Stddev_Pop_Fields = {
   __typename?: 'supported_chains_stddev_pop_fields';
   chainId?: Maybe<Scalars['Float']>;
+  confirmationChainId?: Maybe<Scalars['Float']>;
   latestBlock?: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_pop() on columns of table "supported_chains" */
 export type Supported_Chains_Stddev_Pop_Order_By = {
   chainId?: Maybe<Order_By>;
+  confirmationChainId?: Maybe<Order_By>;
   latestBlock?: Maybe<Order_By>;
 };
 
@@ -1918,25 +1585,29 @@ export type Supported_Chains_Stddev_Pop_Order_By = {
 export type Supported_Chains_Stddev_Samp_Fields = {
   __typename?: 'supported_chains_stddev_samp_fields';
   chainId?: Maybe<Scalars['Float']>;
+  confirmationChainId?: Maybe<Scalars['Float']>;
   latestBlock?: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_samp() on columns of table "supported_chains" */
 export type Supported_Chains_Stddev_Samp_Order_By = {
   chainId?: Maybe<Order_By>;
+  confirmationChainId?: Maybe<Order_By>;
   latestBlock?: Maybe<Order_By>;
 };
 
 /** aggregate sum on columns */
 export type Supported_Chains_Sum_Fields = {
   __typename?: 'supported_chains_sum_fields';
-  chainId?: Maybe<Scalars['Int']>;
+  chainId?: Maybe<Scalars['bigint']>;
+  confirmationChainId?: Maybe<Scalars['bigint']>;
   latestBlock?: Maybe<Scalars['Int']>;
 };
 
 /** order by sum() on columns of table "supported_chains" */
 export type Supported_Chains_Sum_Order_By = {
   chainId?: Maybe<Order_By>;
+  confirmationChainId?: Maybe<Order_By>;
   latestBlock?: Maybe<Order_By>;
 };
 
@@ -1944,6 +1615,8 @@ export type Supported_Chains_Sum_Order_By = {
 export enum Supported_Chains_Update_Column {
   /** column name */
   ChainId = 'chainId',
+  /** column name */
+  ConfirmationChainId = 'confirmationChainId',
   /** column name */
   LatestBlock = 'latestBlock',
   /** column name */
@@ -1954,12 +1627,14 @@ export enum Supported_Chains_Update_Column {
 export type Supported_Chains_Var_Pop_Fields = {
   __typename?: 'supported_chains_var_pop_fields';
   chainId?: Maybe<Scalars['Float']>;
+  confirmationChainId?: Maybe<Scalars['Float']>;
   latestBlock?: Maybe<Scalars['Float']>;
 };
 
 /** order by var_pop() on columns of table "supported_chains" */
 export type Supported_Chains_Var_Pop_Order_By = {
   chainId?: Maybe<Order_By>;
+  confirmationChainId?: Maybe<Order_By>;
   latestBlock?: Maybe<Order_By>;
 };
 
@@ -1967,12 +1642,14 @@ export type Supported_Chains_Var_Pop_Order_By = {
 export type Supported_Chains_Var_Samp_Fields = {
   __typename?: 'supported_chains_var_samp_fields';
   chainId?: Maybe<Scalars['Float']>;
+  confirmationChainId?: Maybe<Scalars['Float']>;
   latestBlock?: Maybe<Scalars['Float']>;
 };
 
 /** order by var_samp() on columns of table "supported_chains" */
 export type Supported_Chains_Var_Samp_Order_By = {
   chainId?: Maybe<Order_By>;
+  confirmationChainId?: Maybe<Order_By>;
   latestBlock?: Maybe<Order_By>;
 };
 
@@ -1980,12 +1657,14 @@ export type Supported_Chains_Var_Samp_Order_By = {
 export type Supported_Chains_Variance_Fields = {
   __typename?: 'supported_chains_variance_fields';
   chainId?: Maybe<Scalars['Float']>;
+  confirmationChainId?: Maybe<Scalars['Float']>;
   latestBlock?: Maybe<Scalars['Float']>;
 };
 
 /** order by variance() on columns of table "supported_chains" */
 export type Supported_Chains_Variance_Order_By = {
   chainId?: Maybe<Order_By>;
+  confirmationChainId?: Maybe<Order_By>;
   latestBlock?: Maybe<Order_By>;
 };
 
@@ -2003,24 +1682,36 @@ export type Timestamptz_Comparison_Exp = {
 };
 
 export type GetChainDetailsQueryVariables = Exact<{
-  chainId: Scalars['Int'];
+  chainId: Scalars['bigint'];
 }>;
 
 
-export type GetChainDetailsQuery = { __typename?: 'query_root', supported_chains_by_pk?: Maybe<{ __typename?: 'supported_chains', chainId: number, latestBlock: number, chainlinkConfigs: Array<{ __typename?: 'chainlink_configs', eiChainlinkUrl: string, eiCiAccesskey: string, eiCiSecret: string, eiIcAccesskey: string, eiIcSecret: string, provider: string, debridgeAddr: string, network: string }> }> };
+export type GetChainDetailsQuery = { __typename?: 'query_root', supported_chains_by_pk?: Maybe<{ __typename?: 'supported_chains', chainId: any, latestBlock: number, config?: Maybe<{ __typename?: 'chainlink_configs', eiChainlinkUrl: string, eiCiAccesskey: string, eiCiSecret: string, eiIcAccesskey: string, eiIcSecret: string, provider: string, debridgeAddr: string, network: string }> }> };
 
 export type GetChainSubmissionDetailsQueryVariables = Exact<{
-  chainIdTo: Scalars['Int'];
+  confirmationChainId: Scalars['bigint'];
   submissionId: Scalars['Int'];
 }>;
 
 
-export type GetChainSubmissionDetailsQuery = { __typename?: 'query_root', aggregator_chains: Array<{ __typename?: 'aggregator_chains', supportedChain: { __typename?: 'supported_chains', chainlinkConfigs: Array<{ __typename?: 'chainlink_configs', chainId: number }> } }>, submissions_by_pk?: Maybe<{ __typename?: 'submissions', id: number }> };
+export type GetChainSubmissionDetailsQuery = { __typename?: 'query_root', supported_chains: Array<{ __typename?: 'supported_chains', config?: Maybe<{ __typename?: 'chainlink_configs', chainId: any, eiChainlinkUrl: string, eiCiAccesskey: string, eiCiSecret: string, eiIcAccesskey: string, eiIcSecret: string }> }>, submissions_by_pk?: Maybe<{ __typename?: 'submissions', id: number }> };
 
 export type GetChainsConfigQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetChainsConfigQuery = { __typename?: 'query_root', supported_chains: Array<{ __typename?: 'supported_chains', chainId: number, network: string }>, chainlink_configs: Array<{ __typename?: 'chainlink_configs', chainId: number, network: string }> };
+export type GetChainsConfigQuery = { __typename?: 'query_root', supported_chains: Array<{ __typename?: 'supported_chains', chainId: any, network: string }>, chainlink_configs: Array<{ __typename?: 'chainlink_configs', chainId: any, network: string }> };
+
+export type GetNewSubmissionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetNewSubmissionsQuery = { __typename?: 'query_root', submissions: Array<{ __typename?: 'submissions', submissionId: string, chainTo: number }>, chainlink_configs: Array<{ __typename?: 'chainlink_configs', chainId: any, submitJobId: string, submitManyJobId: string, confirmNewAssetJobId: string, eiChainlinkUrl: string, eiIcAccesskey: string, eiIcSecret: string }> };
+
+export type GetCreatedSubmissionsByConfiramationChainIdQueryVariables = Exact<{
+  confirmationChainId: Scalars['bigint'];
+}>;
+
+
+export type GetCreatedSubmissionsByConfiramationChainIdQuery = { __typename?: 'query_root', get_created_submissions_by_confirmation_chain_id: Array<{ __typename?: 'submissions', submissionId: string }> };
 
 export type InsertSubmissionMutationVariables = Exact<{
   object: Submissions_Insert_Input;
@@ -2028,3 +1719,20 @@ export type InsertSubmissionMutationVariables = Exact<{
 
 
 export type InsertSubmissionMutation = { __typename?: 'mutation_root', insert_submissions_one?: Maybe<{ __typename?: 'submissions', id: number }> };
+
+export type UpdateChainLatestBlockMutationVariables = Exact<{
+  chainId: Scalars['bigint'];
+  latestBlock: Scalars['Int'];
+}>;
+
+
+export type UpdateChainLatestBlockMutation = { __typename?: 'mutation_root', update_supported_chains_by_pk?: Maybe<{ __typename?: 'supported_chains', latestBlock: number }> };
+
+export type UpdateSubmissionsMutationVariables = Exact<{
+  runId: Scalars['String'];
+  status: Scalars['Int'];
+  submissionIds: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type UpdateSubmissionsMutation = { __typename?: 'mutation_root', update_submissions?: Maybe<{ __typename?: 'submissions_mutation_response', affected_rows: number }> };

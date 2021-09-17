@@ -1,7 +1,9 @@
 
-export const APPLICATION_PORT = process.env.PORT || 8080;
 export const REQUIRE_MIN_CONFIRMATIONS = 3;
+export const PUT_JOBS_TO_CHAINLINK_INTERVAL = 3000;
 
+
+export const APPLICATION_PORT = process.env.PORT || 8080;
 
 export const HASURA_GRAPHQL_JWT_SECRET =
 {
@@ -15,6 +17,3 @@ export const HASURA_GRAPHQL_ADMIN_SECRET = "";
 export const LOG_TO_SYSLOG = false;
 export const SYSLOG_PORT = 514;
 export const SYSLOG_HOST = ""; // "10.10.3.177";
-
-
-export const DEFAULT_SLOT_DURATION = 30;

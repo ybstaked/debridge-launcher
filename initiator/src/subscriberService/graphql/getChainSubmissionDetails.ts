@@ -3,22 +3,20 @@ import { gql } from "graphql-request";
 
 
 export const GET_CHAIN_SUBMISSION_DETAILS_QUERY = gql`
-	query getChainSubmissionDetails( $chainIdTo: Int!, $submissionId: Int! )
-	{
-		aggregator_chains( where: { chainIdTo: { _eq: $chainIdTo } } )
-		{
-			supportedChain
-			{
-				chainlinkConfigs
-				{
-					chainId
-				}
-			}
-		}
+query getChainSubmissionDetails($confirmationChainId: bigint!, $submissionId: Int!) {
+  supported_chains(where: {confirmationChainId: {_eq: $confirmationChainId}}) {
+    config {
+      chainId
+      eiChainlinkUrl
+      eiCiAccesskey
+      eiCiSecret
+      eiIcAccesskey
+      eiIcSecret
+    }
+  }
 
-		submissions_by_pk( id: $submissionId )
-		{
-			id
-		}
-	}
+  submissions_by_pk(id: $submissionId) {
+    id
+  }
+}
 `;
