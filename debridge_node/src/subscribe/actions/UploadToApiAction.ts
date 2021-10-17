@@ -8,6 +8,7 @@ import { DebrdigeApiService } from '../../services/DebrdigeApiService';
 import { UploadStatusEnum } from '../../enums/UploadStatusEnum';
 import { ConfirmNewAssetEntity } from '../../entities/ConfirmNewAssetEntity';
 import * as Sentry from '@sentry/minimal';
+import { paginate } from '../../utils/paginate';
 
 //Action that update signatures to debridge API
 @Injectable()
@@ -37,9 +38,7 @@ export class UploadToApiAction extends IAction {
       if (submissions.length > 0) {
         const size = Math.ceil(submissions.length / this.PAGE_SIZE);
         for (let pageNumber = 0; pageNumber < size; pageNumber++) {
-          const skip = pageNumber * this.PAGE_SIZE;
-          const end = Math.min((pageNumber + 1) * this.PAGE_SIZE, submissions.length);
-          await this.confirmSubmissions(submissions.slice(skip, end));
+          await this.confirmSubmissions(paginate(submissions, size, pageNumber));
         }
       }
     } catch (e) {
