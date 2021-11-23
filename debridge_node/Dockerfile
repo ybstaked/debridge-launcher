@@ -8,4 +8,5 @@ COPY nest-cli.json /home/node
 WORKDIR /home/node
 RUN npm install
 COPY src/  /home/node/src
-CMD npm start
+RUN npm run build
+CMD node dist/src/main --max-old-space-size=8192
