@@ -1,26 +1,28 @@
 package services
 
 import (
+	"github.com/debridge-finance/orbitdb-go/pkg/context"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
 	"github.com/debridge-finance/orbitdb-go/pkg/log"
-	"github.com/debridge-finance/orbitdb-go/services/ipfs"
-	"github.com/debridge-finance/orbitdb-go/services/orbitdb"
+	si "github.com/debridge-finance/orbitdb-go/services/ipfs"
+	so "github.com/debridge-finance/orbitdb-go/services/orbitdb"
 )
 
 type Services struct {
 	Config Config
 
-	IPFS *ipfs.IPFS
-	ODB  *orbitdb.Orbitdb
+	IPFS    *si.IPFS
+	OrbitDB *so.OrbitDB
+	Ctx     context.Context
 }
 
-func Create(c Config, l log.Logger) (*Services, error) {
-	ipfs, err := ipfs.Create(*c.IPFS, l)
+func Create(c Config, l log.Logger, ctx context.Context) (*Services, error) {
+	ipfs, err := si.Create(ctx, *c.IPFS, l)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create IPFS service")
 	}
 
-	orbitdb, err := orbitdb.Create(*c.Orbitdb, l)
+	orbitdb, err := so.Create(ctx, *c.OrbitDB, l, ipfs.CoreAPI)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create orbitdb services")
 	}
@@ -28,7 +30,8 @@ func Create(c Config, l log.Logger) (*Services, error) {
 	return &Services{
 		Config: c,
 
-		IPFS: ipfs,
-		ODB:  orbitdb,
+		IPFS:    ipfs,
+		OrbitDB: orbitdb,
+		Ctx:     ctx,
 	}, nil
 }

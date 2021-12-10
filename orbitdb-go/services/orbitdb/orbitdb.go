@@ -1,23 +1,20 @@
 package orbitdb
 
 import (
-	"context"
-
+	"github.com/debridge-finance/orbitdb-go/pkg/context"
+	i "github.com/debridge-finance/orbitdb-go/pkg/ipfs"
 	"github.com/debridge-finance/orbitdb-go/pkg/log"
 	o "github.com/debridge-finance/orbitdb-go/pkg/orbitdb"
 )
 
-type (
-	OrbitDB = o.OrbitDB
-)
-type OrbitDBService struct {
+type OrbitDB struct {
 	Config Config
 
 	log     log.Logger
-	OrbitDB *OrbitDB
+	OrbitDB *o.OrbitDB
 }
 
-func Create(c Config, ctx context.Context, ipfs *ipfs.IPFS, l log.Logger) (*OrbitDBService, error) {
+func Create(ctx context.Context, c Config, l log.Logger, ipfs i.CoreAPI) (*OrbitDB, error) {
 	o, err := o.Create(ctx, ipfs, c.Repo)
 	if err != nil {
 		return nil, err
@@ -25,7 +22,7 @@ func Create(c Config, ctx context.Context, ipfs *ipfs.IPFS, l log.Logger) (*Orbi
 
 	l = l.With().Str("component", "orbitdbService").Logger()
 
-	return &OrbitDBService{
+	return &OrbitDB{
 		Config:  c,
 		log:     l,
 		OrbitDB: o,

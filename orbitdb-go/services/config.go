@@ -2,8 +2,8 @@ package services
 
 import (
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
-	"github.com/debridge-finance/orbitdb-go/pkg/services/ipfs"
-	"github.com/debridge-finance/orbitdb-go/pkg/services/orbitdb"
+	"github.com/debridge-finance/orbitdb-go/services/ipfs"
+	"github.com/debridge-finance/orbitdb-go/services/orbitdb"
 )
 
 var DefaultConfig = Config{
