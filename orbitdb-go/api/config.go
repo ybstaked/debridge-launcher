@@ -1,29 +1,29 @@
 package api
 
 import (
-	"debridge-finance/orbitdb-go/app/emitent/api/emission"
-	"debridge-finance/orbitdb-go/errors"
+	"github.com/debridge-finance/orbitdb-go/api/eventlog"
+	"github.com/debridge-finance/orbitdb-go/pkg/errors"
 )
 
 var DefaultConfig = Config{
-	Emission: &emission.DefaultConfig,
+	EventLog: &eventlog.DefaultConfig,
 }
 
 type Config struct {
-	Emission *emission.Config
+	EventLog *eventlog.Config
 }
 
 func (c *Config) SetDefaults() {
 loop:
 	for {
 		switch {
-		case c.Emission == nil:
-			c.Emission = DefaultConfig.Emission
+		case c.EventLog == nil:
+			c.EventLog = DefaultConfig.EventLog
 		default:
 			break loop
 		}
 	}
-	c.Emission.SetDefaults()
+	c.EventLog.SetDefaults()
 }
 
 func (c Config) Validate() error {
@@ -32,9 +32,9 @@ func (c Config) Validate() error {
 	}
 
 	var err error
-	err = c.Emission.Validate()
+	err = c.EventLog.Validate()
 	if err != nil {
-		return wrapErr(err, "emission")
+		return wrapErr(err, "eventlog")
 	}
 
 	return nil

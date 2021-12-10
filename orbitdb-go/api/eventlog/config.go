@@ -1,4 +1,4 @@
-package orbitdb
+package eventlog
 
 var DefaultConfig = Config{}
 
