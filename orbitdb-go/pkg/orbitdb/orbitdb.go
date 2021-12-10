@@ -1,4 +1,4 @@
-package pinner
+package orbitdb
 
 import (
 	"context"
@@ -6,11 +6,15 @@ import (
 
 	"os"
 
-	orbitdb "berty.tech/go-orbit-db"
+	odb "berty.tech/go-orbit-db"
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
 )
 
-func CreateOrbitdb(ctx context.Context, ipfs coreapi.CoreAPI, dbPath string) (orbitdb.OrbitDB, error) {
+type (
+	OrbitDB = odb.OrbitDB
+)
+
+func Create(ctx context.Context, ipfs coreapi.CoreAPI, dbPath string) (*OrbitDB, error) {
 	_, err := os.Stat(dbPath)
 	if os.IsNotExist(err) {
 		err = os.Mkdir(dbPath, 0755)
@@ -19,11 +23,11 @@ func CreateOrbitdb(ctx context.Context, ipfs coreapi.CoreAPI, dbPath string) (or
 		}
 	}
 
-	options := &orbitdb.NewOrbitDBOptions{Directory: &dbPath}
+	options := &odb.NewOrbitDBOptions{Directory: &dbPath}
 
-	orbitdb, err := orbitdb.NewOrbitDB(ctx, ipfs, options)
+	orbitdb, err := odb.NewOrbitDB(ctx, ipfs, options)
 	if err != nil {
 		fmt.Printf("failed to create NewOrbitDB: %v", err)
 	}
-	return orbitdb, nil
+	return &orbitdb, nil
 }

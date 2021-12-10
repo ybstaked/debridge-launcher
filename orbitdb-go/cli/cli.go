@@ -17,48 +17,52 @@ import (
 	"github.com/debridge-finance/orbitdb-go/pkg/config"
 	"github.com/debridge-finance/orbitdb-go/pkg/crypto"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
+	"github.com/debridge-finance/orbitdb-go/pkg/ipfs"
 	"github.com/debridge-finance/orbitdb-go/pkg/log"
 	"github.com/debridge-finance/orbitdb-go/pkg/meta"
 
 	cli "github.com/urfave/cli/v2"
 	di "go.uber.org/dig"
+)package cli
+
+import (
+	"os"
+
+	"gopkg.in/urfave/cli.v2"
+	"gopkg.in/yaml.v2"
+
+	"debridge-finance/orbitdb-go/app/emitent/api"
+	appConfig "debridge-finance/orbitdb-go/app/emitent/config"
+	"debridge-finance/orbitdb-go/app/emitent/meta"
+	"debridge-finance/orbitdb-go/config"
+	"debridge-finance/orbitdb-go/errors"
+	"debridge-finance/orbitdb-go/log"
+	"debridge-finance/orbitdb-go/services"
+	"debridge-finance/orbitdb-go/supervisor"
+	"debridge-finance/orbitdb-go/time"
 )
 
 var (
 	Flags = []cli.Flag{
 		&cli.StringFlag{
-			Name:    "pid-file",
-			Aliases: []string{"p"},
-			EnvVars: []string{config.EnvironPrefix + "_PID_FILE"},
-			Usage:   "path to pid file to report into",
-			Value:   meta.Name + ".pid",
+			Name:    "config",
+			Aliases: []string{"c"},
+			EnvVars: []string{appConfig.EnvPrefix + "_CONFIG"},
+			Usage:   "path to service configuration file",
+			Value:   "emitent.yaml",
+		},
+		&cli.StringFlag{
+			Name:    "address",
+			Aliases: []string{"a"},
+			Usage:   "address to listen on, example: ':8080'",
+			Value:   "",
 		},
 		&cli.StringFlag{
 			Name:    "log-level",
 			Aliases: []string{"l"},
-			Usage:   "logging level (debug, info, warn, error)",
-		},
-		&cli.StringSliceFlag{
-			Name:    "config",
-			Aliases: []string{"c"},
-			EnvVars: []string{config.EnvironPrefix + "_CONFIG"},
-			Usage:   "path to application configuration file/files",
-			Value:   cli.NewStringSlice("config.yml"),
-		},
-
-		//
-
-		&cli.DurationFlag{
-			Name:  "duration",
-			Usage: "exit after duration",
-		},
-		&cli.BoolFlag{
-			Name:  "profile",
-			Usage: "write profile information for debugging (cpu.prof, heap.prof)",
-		},
-		&cli.BoolFlag{
-			Name:  "trace",
-			Usage: "write trace information for debugging (trace.prof)",
+			EnvVars: []string{appConfig.EnvPrefix + "_LOG_LEVEL"},
+			Usage:   "logging level which must be one of: debug, info, warn, error, panic, fatal",
+			Value:   "debug",
 		},
 	}
 	Commands = []*cli.Command{
@@ -68,282 +72,101 @@ var (
 			Usage:   "Configuration tools",
 			Subcommands: []*cli.Command{
 				{
-					Name:    "validate",
-					Aliases: []string{"v"},
-					Usage:   "Validate configuration and exit",
-					Action:  ConfigValidateAction,
+					Name:    "show-default",
+					Aliases: []string{"sd"},
+					Usage:   "Show default configuration",
+					Action:  ConfigShowDefaultAction,
+				},
+				{
+					Name:    "show",
+					Aliases: []string{"s"},
+					Usage:   "Show defaults merged with configuration from --config file",
+					Action:  ConfigShowAction,
 				},
 			},
 		},
 	}
-
-	c *di.Container
 )
 
-func Before(ctx *cli.Context) error {
-	var err error
-
-	c = di.New()
-
-	//
-
-	err = c.Provide(func() *cli.Context { return ctx })
-	if err != nil {
-		return err
+func ApplyContextToConfig(ctx *cli.Context, c *appConfig.Config) {
+	// XXX: to control some configuration keys from command-line arguments
+	address := ctx.String("address")
+	if address != "" {
+		c.Server.Address = address
 	}
-
-	err = c.Provide(func() *spew.ConfigState {
-		return &spew.ConfigState{
-			DisableMethods:          false,
-			DisableCapacities:       true,
-			DisablePointerAddresses: true,
-			Indent:                  "  ",
-			SortKeys:                true,
-			SpewKeys:                false,
-		}
-	})
-	if err != nil {
-		return err
+	logLevel := ctx.String("log-level")
+	if logLevel != "" {
+		c.Log.Level = logLevel
 	}
-
-	err = c.Provide(func() *json.Encoder {
-		enc := json.NewEncoder(os.Stdout)
-		enc.SetIndent("", "  ")
-		return enc
-	})
-	if err != nil {
-		return err
-	}
-
-	err = c.Provide(func(ctx *cli.Context) (*config.Config, error) {
-		c, err := config.Load(ctx.StringSlice("config"))
-		if err != nil {
-			return nil, err
-		}
-
-		return c, nil
-	})
-	if err != nil {
-		return err
-	}
-
-	err = c.Provide(func(ctx *cli.Context, c *config.Config) (log.Logger, error) {
-		lc := *c.Log
-		level := ctx.String("log-level")
-		if level != "" {
-			lc.Level = level
-		}
-
-		return log.Create(lc)
-	})
-	if err != nil {
-		return err
-	}
-
-	err = c.Provide(func() crypto.Rand { return crypto.DefaultRand })
-	if err != nil {
-		return err
-	}
-
-	err = c.Provide(func(ctx *cli.Context, c *config.Config) (*watchdog.Upgrader, error) {
-		return watchdog.New(watchdog.Options{
-			UpgradeTimeout: c.ShutdownGraceTime,
-			PIDFile:        ctx.String("pid-file"),
-		})
-	})
-	if err != nil {
-		return err
-	}
-
-	//
-
-	err = c.Provide(func() *sync.WaitGroup { return &sync.WaitGroup{} })
-	if err != nil {
-		return err
-	}
-
-	err = c.Provide(func() chan error { return make(chan error, 1) })
-	if err != nil {
-		return err
-	}
-
-	err = c.Provide(func() chan os.Signal {
-		sig := make(chan os.Signal, 1)
-		signal.Notify(
-			sig,
-			syscall.SIGQUIT,
-			syscall.SIGTERM,
-			syscall.SIGINT,
-			syscall.SIGUSR1,
-			syscall.SIGUSR2,
-			syscall.SIGHUP,
-		)
-		return sig
-	})
-	if err != nil {
-		return err
-	}
-
-	//
-
-	duration := ctx.Duration("duration")
-	if duration == 0 {
-		err = c.Provide(func(ctx *cli.Context) context.Context {
-			return context.Background()
-		})
-	} else {
-		err = c.Provide(func(ctx *cli.Context) context.Context {
-			c, cancel := context.WithTimeout(context.Background(), duration)
-			go func() {
-				<-c.Done()
-				cancel()
-			}()
-			return c
-		})
-	}
-	if err != nil {
-		return err
-	}
-
-	//
-
-	if ctx.Bool("profile") {
-		err = c.Invoke(writeProfile)
-		if err != nil {
-			return err
-		}
-	}
-
-	if ctx.Bool("trace") {
-		err = c.Invoke(writeTrace)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
 }
 
-func ConfigValidateAction(ctx *cli.Context) error {
-	return c.Invoke(func(l log.Logger) error {
-		configs := ctx.StringSlice("config")
-		c, err := config.Load(
-			configs,
-			config.InitPostprocessors...,
-		)
-		if err != nil {
-			return err
-		}
+//
 
-		err = config.Validate(c)
-		if err != nil {
-			return err
-		}
+func ConfigShowDefaultAction(ctx *cli.Context) error {
+	buf, err := yaml.Marshal(appConfig.DefaultConfig)
+	if err != nil {
+		return err
+	}
 
-		l.Info().
-			Strs("configs", configs).
-			Msg("configuration validation is ok")
-
-		return nil
-	})
+	_, err = os.Stdout.Write(buf)
+	return err
 }
+
+func ConfigShowAction(ctx *cli.Context) error {
+	c := &appConfig.Config{}
+	err := config.
+		NewLoader(appConfig.EnvPrefix).
+		Load(ctx.String("config"), c)
+	if err != nil {
+		return err
+	}
+	// FIXME: may fail with NPE on invalid config
+	ApplyContextToConfig(ctx, c)
+
+	enc := yaml.NewEncoder(os.Stdout)
+	defer enc.Close()
+	return enc.Encode(c)
+}
+
+//
 
 func RootAction(ctx *cli.Context) error {
-	components := c.String()
-	_ = c.Invoke(func(l log.Logger) {
-		l.Trace().Msgf(
-			"component graph: %s",
-			strings.TrimSpace(components),
-		)
-	})
+	c := &appConfig.Config{}
+	err := config.
+		NewLoader(appConfig.EnvPrefix).
+		Load(ctx.String("config"), c)
+	if err != nil {
+		return errors.Wrapf(err, "failed to load config from %q", ctx.String("config"))
+	}
+	err = c.Validate()
+	if err != nil {
+		return errors.Wrap(err, "failed to validate config")
+	}
+	ApplyContextToConfig(ctx, c)
 
-	return c.Invoke(func(
-		ctx context.Context,
-		cfg *config.Config,
-		w *watchdog.Upgrader,
-		l log.Logger,
-		running *sync.WaitGroup,
-		errc chan error,
-		sig chan os.Signal,
-	) error {
-		l.Info().Msg("running")
-		spew.Dump([]interface{}{"probably we need spew"})
+	//
 
-		err := w.Ready()
+	l, err := log.Create(*c.Log)
+	if err != nil {
+		return errors.Wrap(err, "failed to create logger")
+	}
+
+	// FIXME: configuration for supervisor?
+	su := supervisor.New("root", supervisor.NewDelayRestartStrategy(l, 5*time.Second))
+
+	//
+
+	return su.Supervise(func() error {
+		ss, err := services.Create(*c.Services, l)
 		if err != nil {
-			return err
+			return errors.Wrap(err, "failed to create services")
 		}
-		// ipfs
-		// // sh := shell.NewShell("localhost:5001")
-		// // spew.Dump([]interface{}{"go-ipfs-shell:", sh})
-
-		// ipfs, err := pinner.NewIPFS(ctx, "./ipfs")
-		// if err != nil {
-		// 	fmt.Println(fmt.Errorf("failed to spawn IPFS node: %s", err))
-		// }
-
-		// fmt.Println("creating orbitdb instance...")
-		// orbitdb, err := pinner.CreateOrbitdb(ctx, ipfs, "orbitdb")
-		// if err != nil {
-		// 	errc <- (fmt.Errorf("failed to spawn orbitdb: %s", err))
-		// }
-		// fmt.Println("orbitdb instance created")
-
-		// // fmt.Println("openning orbitdb db...")
-		// db, err := orbitdb.Log(ctx, "eventlog", nil)
-		// if err != nil {
-		// 	errc <- fmt.Errorf("failed to spawn orbitdb2: %s", err)
-		// }
-		// fmt.Println("orbitdb db opened...")
-		// fmt.Printf("db.Address()\t%v\n", db)
-
-	loop:
-		for {
-			select {
-			case <-w.Exit():
-				break loop
-			case <-ctx.Done():
-				w.Stop()
-				break loop
-
-			case err := <-errc:
-				if err != nil {
-					return err
-				}
-			case si := <-sig:
-				l.Info().Str("signal", si.String()).Msg("received signal")
-				switch si {
-				case syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT:
-					w.Stop()
-				case syscall.SIGUSR1, syscall.SIGUSR2, syscall.SIGHUP:
-					err = w.Upgrade()
-					if err != nil {
-						return err
-					}
-				}
-			case <-bus.Config:
-				err = w.Upgrade()
-				if err != nil {
-					return err
-				}
-			}
+		s, err := api.Create(*c.Api, *c.Server, l, ss)
+		if err != nil {
+			return errors.Wrap(err, "failed to create API handler")
 		}
 
-		//
-
-		defer os.Exit(0)
-		l.Info().Msg("shutdown watchdog")
-
-		time.AfterFunc(cfg.ShutdownGraceTime, func() {
-			l.Warn().
-				Dur("graceTime", cfg.ShutdownGraceTime).
-				Msg("graceful shutdown timed out")
-			os.Exit(1)
-		})
-
-		running.Wait() // wait for other running components to finish
-
-		return nil
+		return s.ListenAndServe()
 	})
 }
 
@@ -351,24 +174,18 @@ func RootAction(ctx *cli.Context) error {
 
 func NewApp() *cli.App {
 	app := &cli.App{}
-
-	app.Before = Before
-	app.Flags = Flags
-	app.Action = RootAction
-	app.Commands = Commands
+	app.Name = meta.CommandName
+	app.Usage = meta.Description
 	app.Version = meta.Version
-
+	app.Flags = Flags
+	app.Commands = Commands
+	app.Action = RootAction
 	return app
 }
 
 func Run() {
 	err := NewApp().Run(os.Args)
 	if err != nil {
-		errors.Fatal(errors.Wrap(
-			err, fmt.Sprintf(
-				"pid: %d, ppid: %d",
-				os.Getpid(), os.Getppid(),
-			),
-		))
+		errors.Fatal(err)
 	}
 }
