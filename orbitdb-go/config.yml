@@ -1,3 +1,4 @@
+EnvPrefix: dev
 log:
   level: trace
 orbitdb:
