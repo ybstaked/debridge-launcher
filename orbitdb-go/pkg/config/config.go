@@ -1,151 +1,91 @@
 package config
 
 import (
-	"net/url"
+	"os"
 	"strings"
-	"time"
 
-	"github.com/debridge-finance/orbitdb-go/pkg/revip"
+	"github.com/mitchellh/mapstructure"
+	"github.com/spf13/viper"
 
-	"github.com/debridge-finance/orbitdb-go/pkg/bus"
-	"github.com/debridge-finance/orbitdb-go/pkg/log"
-	"github.com/debridge-finance/orbitdb-go/pkg/meta"
+	"github.com/debridge-finance/orbitdb-go/pkg/errors"
+	"github.com/debridge-finance/orbitdb-go/pkg/path"
+	"github.com/debridge-finance/orbitdb-go/pkg/time"
 )
 
-const (
-	Subsystem = "config"
-)
-
-var (
-	EnvironPrefix = meta.EnvNamespace
-
-	LocalPostprocessors = []revip.Option{
-		revip.WithDefaults(),
-		revip.WithValidation(),
-	}
-	InitPostprocessors = []revip.Option{
-		revip.WithDefaults(),
-	}
-)
-
-var (
-	Unmarshaler = revip.YamlUnmarshaler
-	Marshaler   = revip.YamlMarshaler
-)
-
-type Config struct {
-	Log *log.Config
-
-	ShutdownGraceTime time.Duration
+type Config interface {
+	SetDefaults()
+	Validate() error
 }
 
-func (c *Config) Default() {
-loop:
-	for {
-		switch {
-		case c.Log == nil:
-			c.Log = &log.Config{}
-		// TODO: add config for orbitdb and ipfs
-		case c.ShutdownGraceTime == 0:
-			c.ShutdownGraceTime = 120 * time.Second
-		default:
-			break loop
-		}
-	}
+type Loader struct {
+	EnvPrefix string
 }
 
-func (c *Config) Update(cc interface{}) error {
-	bus.Config <- bus.ConfigUpdate{
-		Subsystem: Subsystem,
-		Config:    cc,
+func (c *Loader) Unmarshal(config *viper.Viper, v interface{}) error {
+	err := config.Unmarshal(v, func(c *mapstructure.DecoderConfig) {
+		c.DecodeHook = mapstructure.ComposeDecodeHookFunc(
+			mapstructure.StringToTimeDurationHookFunc(),
+			mapstructure.StringToSliceHookFunc(","),
+			mapstructure.StringToTimeHookFunc(time.LayoutRFC3339),
+		)
+	})
+	if err != nil {
+		return errors.Wrapf(err, "failed to unmarshal viper config %s", config.ConfigFileUsed())
 	}
+
 	return nil
 }
 
-//
-
-func Default() (*Config, error) {
-	c := &Config{}
-	err := revip.Postprocess(
-		c,
-		revip.WithDefaults(),
-	)
-	if err != nil {
-		return nil, err
+func (c *Loader) Load(p string, v Config) error {
+	if p == "" {
+		return errors.New("path to the configuration file should not be empty")
 	}
 
-	return c, nil
-}
-
-func Load(paths []string, postprocessors ...revip.Option) (*Config, error) {
 	var (
-		c   = &Config{}
-		err error
+		wd, dir, name string
+		err           error
+		config        = viper.New()
+		keyReplacer   = strings.NewReplacer(".", "_")
 	)
 
-	_, err = log.Create(log.Config{Level: "info"})
+	if p == "" {
+		return errors.New("failed to load configuration: path is empty")
+	}
+
+	wd, err = os.Getwd()
 	if err != nil {
-		return nil, err
+		return errors.Wrap(err, "failed to get cwd while loading config")
+	}
+
+	p = path.Resolve(wd, p)
+
+	if _, err := os.Stat(p); os.IsNotExist(err) {
+		// XXX: viper does not check this and fails with confusing error message
+		return errors.Errorf("configuration file %s does not exists", p)
+	}
+
+	dir, name, _ = path.Explode(p)
+
+	config.AddConfigPath(dir)
+	config.SetConfigName(name)
+	config.SetEnvPrefix(c.EnvPrefix)
+	config.SetEnvKeyReplacer(keyReplacer)
+	config.AutomaticEnv()
+
+	err = config.ReadInConfig()
+	if err != nil {
+		return errors.Wrapf(err, "failed to read configuration from %s", p)
 	}
 
 	//
 
-	if len(postprocessors) == 0 {
-
-		postprocessors = append(postprocessors, LocalPostprocessors...)
-		for _, path := range paths {
-			if strings.HasPrefix(path, revip.SchemeEtcd+":") {
-				_, err := url.Parse(path)
-				if err != nil {
-					return nil, err
-				}
-
-			}
-		}
-	}
-
-	loaders := make([]revip.Option, len(paths))
-	for n, path := range paths {
-		loaders[n], err = revip.FromURL(
-			strings.TrimSpace(path),
-			Unmarshaler,
-		)
-		if nil != err {
-			return nil, err
-		}
-	}
-
-	//
-
-	// FIXME: this is because etcd loader is bad at handling pointers,
-	// we need default values for this to work
-	err = revip.Postprocess(
-		c,
-		InitPostprocessors...,
-	)
+	err = c.Unmarshal(config, v)
 	if err != nil {
-		return nil, err
+		return errors.Wrap(err, "failed to merge loaded configuration with default")
 	}
+	v.SetDefaults()
 
-	_, err = revip.Load(
-		c,
-		append(loaders, revip.FromEnviron(EnvironPrefix))...,
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	err = revip.Postprocess(
-		c,
-		postprocessors...,
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	return c, nil
+	return nil
 }
 
-func Validate(c *Config) error {
-	return revip.WithValidation()(c)
-}
+func NewLoader(envPrefix string) *Loader { return &Loader{envPrefix} }

@@ -6,15 +6,15 @@ import (
 
 	"os"
 
-	odb "berty.tech/go-orbit-db"
-	coreapi "github.com/ipfs/interface-go-ipfs-core"
+	odb "github.com/debridge-finance/orbitdb-go/pkg/berty.tech/go-orbit-db"
+	i "github.com/debridge-finance/orbitdb-go/pkg/ipfs"
 )
 
 type (
 	OrbitDB = odb.OrbitDB
 )
 
-func Create(ctx context.Context, ipfs coreapi.CoreAPI, dbPath string) (*OrbitDB, error) {
+func Create(ctx context.Context, ipfs i.CoreAPI, dbPath string) (*OrbitDB, error) {
 	_, err := os.Stat(dbPath)
 	if os.IsNotExist(err) {
 		err = os.Mkdir(dbPath, 0755)

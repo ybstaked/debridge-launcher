@@ -15,7 +15,7 @@ type Config struct {
 	Level string
 }
 
-func (c *Config) Default() {
+func (c *Config) SetDefaults() {
 loop:
 	for {
 		switch {
