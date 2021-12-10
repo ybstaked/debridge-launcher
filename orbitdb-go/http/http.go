@@ -8,8 +8,8 @@ import (
 
 	console "github.com/mattn/go-isatty"
 
+	"github.com/debridge-finance/orbitdb-go/http/spec"
 	"github.com/debridge-finance/orbitdb-go/pkg/context"
-	"github.com/debridge-finance/orbitdb-go/pkg/http/spec"
 	"github.com/debridge-finance/orbitdb-go/pkg/log"
 )
 

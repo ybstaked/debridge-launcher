@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-chi/chi"
 
-	"github.com/debridge-finance/orbitdb-go/pkg/http/spec"
+	"github.com/debridge-finance/orbitdb-go/http/spec"
 )
 
 type Router struct {

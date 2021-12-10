@@ -1,9 +1,9 @@
 package main
 
 import (
+	"github.com/debridge-finance/orbitdb-go/http"
+	"github.com/debridge-finance/orbitdb-go/http/spec"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
-	"github.com/debridge-finance/orbitdb-go/pkg/http"
-	"github.com/debridge-finance/orbitdb-go/pkg/http/spec"
 	"github.com/debridge-finance/orbitdb-go/pkg/log"
 )
 
