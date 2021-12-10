@@ -1,45 +1,22 @@
 package cli
 
 import (
-	"context"
-	"encoding/json"
-	"fmt"
 	"os"
-	"os/signal"
-	"strings"
-	"sync"
-	"syscall"
-	"time"
 
-	watchdog "github.com/cloudflare/tableflip"
-	spew "github.com/davecgh/go-spew/spew"
-	"github.com/debridge-finance/orbitdb-go/pkg/bus"
-	"github.com/debridge-finance/orbitdb-go/pkg/config"
-	"github.com/debridge-finance/orbitdb-go/pkg/crypto"
+	"github.com/davecgh/go-spew/spew"
+	appConfig "github.com/debridge-finance/orbitdb-go/config"
+	config "github.com/debridge-finance/orbitdb-go/pkg/config"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
-	"github.com/debridge-finance/orbitdb-go/pkg/ipfs"
 	"github.com/debridge-finance/orbitdb-go/pkg/log"
 	"github.com/debridge-finance/orbitdb-go/pkg/meta"
 
 	cli "github.com/urfave/cli/v2"
-	di "go.uber.org/dig"
-)package cli
-
-import (
-	"os"
-
-	"gopkg.in/urfave/cli.v2"
 	"gopkg.in/yaml.v2"
 
-	"debridge-finance/orbitdb-go/app/emitent/api"
-	appConfig "debridge-finance/orbitdb-go/app/emitent/config"
-	"debridge-finance/orbitdb-go/app/emitent/meta"
-	"debridge-finance/orbitdb-go/config"
-	"debridge-finance/orbitdb-go/errors"
-	"debridge-finance/orbitdb-go/log"
-	"debridge-finance/orbitdb-go/services"
-	"debridge-finance/orbitdb-go/supervisor"
-	"debridge-finance/orbitdb-go/time"
+	"github.com/debridge-finance/orbitdb-go/api"
+	"github.com/debridge-finance/orbitdb-go/pkg/time"
+	"github.com/debridge-finance/orbitdb-go/services"
+	"github.com/debridge-finance/orbitdb-go/supervisor"
 )
 
 var (
@@ -47,9 +24,9 @@ var (
 		&cli.StringFlag{
 			Name:    "config",
 			Aliases: []string{"c"},
-			EnvVars: []string{appConfig.EnvPrefix + "_CONFIG"},
-			Usage:   "path to service configuration file",
-			Value:   "emitent.yaml",
+			// EnvVars: []string{config.Config.EnvPrefix + "_CONFIG"},
+			Usage: "path to service configuration file",
+			Value: "config.yml",
 		},
 		&cli.StringFlag{
 			Name:    "address",
@@ -60,9 +37,9 @@ var (
 		&cli.StringFlag{
 			Name:    "log-level",
 			Aliases: []string{"l"},
-			EnvVars: []string{appConfig.EnvPrefix + "_LOG_LEVEL"},
-			Usage:   "logging level which must be one of: debug, info, warn, error, panic, fatal",
-			Value:   "debug",
+			// EnvVars: []string{config.EnvPrefix + "_LOG_LEVEL"},
+			Usage: "logging level which must be one of: debug, info, warn, error, panic, fatal",
+			Value: "debug",
 		},
 	}
 	Commands = []*cli.Command{
@@ -155,9 +132,10 @@ func RootAction(ctx *cli.Context) error {
 	su := supervisor.New("root", supervisor.NewDelayRestartStrategy(l, 5*time.Second))
 
 	//
+	spew.Dump([]interface{}{"context", ctx})
 
 	return su.Supervise(func() error {
-		ss, err := services.Create(*c.Services, l)
+		ss, err := services.Create(*c.Services, l, ctx.Context)
 		if err != nil {
 			return errors.Wrap(err, "failed to create services")
 		}
