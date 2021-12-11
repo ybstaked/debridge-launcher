@@ -25,7 +25,7 @@ func Endpoints(handlers spec.HandlerRegistry) spec.Endpoints {
 	encodingMime := "application/json"
 	return spec.Endpoints{
 		spec.NewEndpoint("post", "/submission", "Request tokens emission", // FIXME: more concrete examples
-			spec.EndpointHandler(handlers.Get("emissionRequest")),
+			spec.EndpointHandler(handlers.Get("eventlogAddReq")),
 			spec.EndpointDescription("This handler creates a request for token emission which awaits approval from operator role"),
 			spec.EndpointResponse(http.StatusCreated, eventlog.RequestResult{}, "Successfully created an eventlog ADD request"),
 			spec.EndpointResponse(http.StatusBadRequest, http.Error{}, "Body parsing was failed"),
@@ -44,7 +44,8 @@ func Create(c Config, sc http.Config, l log.Logger, s *services.Services) (*API,
 	handlers := spec.HandlerRegistry{}
 
 	eventlogAddReq, err := eventlog.CreateAddRequest(
-	// s.OrbitDB,
+		*c.EventLog, l,
+		s.OrbitDB,
 	)
 	if err != nil {
 		return nil, wrapErr(err, "emission request")

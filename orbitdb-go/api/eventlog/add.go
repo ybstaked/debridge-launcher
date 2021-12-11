@@ -3,8 +3,10 @@ package eventlog
 import (
 	"encoding/json"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/debridge-finance/orbitdb-go/http"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
+	"github.com/debridge-finance/orbitdb-go/pkg/log"
 
 	orbit "github.com/debridge-finance/orbitdb-go/services/orbitdb"
 )
@@ -12,19 +14,20 @@ import (
 type AddRequest struct {
 	Config Config
 
+	log     log.Logger
 	orbitdb *orbit.OrbitDB // TODO: change to eventlog
 }
 
 type RequestParams struct {
 	SubmissionId string `json:"submissionId"     swag_example:"f9872d1840D7322E4476C4C08c625Ab9E04d3960"`
 	Signature    string `json:"signature"`
-	Event        []byte `json:"event"  swag_description:"json tx event with current submission"`
+	Event        string `json:"event"  swag_description:"json tx event with current submission"`
 }
 
 type Entry struct {
 	SubmissionId string `bson:"submissionId"`
 	Signature    string `bson:"signature"`
-	Event        []byte `bson:"event"`
+	Event        string `bson:"event"`
 }
 
 type RequestResult struct {
@@ -90,12 +93,13 @@ func (h *AddRequest) AddToOrbitdb(e *Entry) (string, error) {
 	// 	Versions: emitent.IdentityVersions{},
 	// }
 	// e.Address = p.Address
+	h.log.Debug().Msg("AddToOrbitdb")
 
 	return "ipfs-hash-whould-be-here", nil
 }
 func (h *AddRequest) ParametersToModel(p *RequestParams, e *Entry) error {
 	// identity := emitent.Identity(*p.Identity)
-
+	spew.Dump([]interface{}{"request params", p})
 	// e.Id = rand.String(32)
 	// e.Identity = emitent.IdentityContainer{
 	// 	Current:  &identity,
@@ -128,14 +132,16 @@ func (p *RequestParams) Validate() error {
 
 //
 
-func CreateAddRequest() (*AddRequest, error) {
-	return &AddRequest{
-		orbitdb: nil,
-	}, nil
-}
-
-// func CreateAddRequest(odb *orbit.OrbitDB) (*AddRequest, error) {
+// func CreateAddRequest() (*AddRequest, error) {
 // 	return &AddRequest{
-// 		orbitdb: odb,
+// 		orbitdb: nil,
 // 	}, nil
 // }
+
+func CreateAddRequest(c Config, l log.Logger, odb *orbit.OrbitDB) (*AddRequest, error) {
+	return &AddRequest{
+		Config:  c,
+		log:     l,
+		orbitdb: odb,
+	}, nil
+}
