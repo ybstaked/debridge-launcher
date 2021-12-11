@@ -128,8 +128,14 @@ func (p *RequestParams) Validate() error {
 
 //
 
-func CreateAddRequest(odb *orbit.OrbitDB) (*AddRequest, error) {
+func CreateAddRequest() (*AddRequest, error) {
 	return &AddRequest{
-		orbitdb: odb,
+		orbitdb: nil,
 	}, nil
 }
+
+// func CreateAddRequest(odb *orbit.OrbitDB) (*AddRequest, error) {
+// 	return &AddRequest{
+// 		orbitdb: odb,
+// 	}, nil
+// }

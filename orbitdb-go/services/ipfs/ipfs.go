@@ -3,28 +3,44 @@ package ipfs
 import (
 	"context"
 
-	i "github.com/debridge-finance/orbitdb-go/pkg/ipfs"
+	ipfs "github.com/debridge-finance/orbitdb-go/pkg/ipfs"
 	"github.com/debridge-finance/orbitdb-go/pkg/log"
+	"github.com/ipfs/go-ipfs/core"
 )
 
 type IPFS struct {
 	Config Config
 
 	log     log.Logger
-	CoreAPI i.CoreAPI
+	CoreAPI ipfs.CoreAPI
+	node    *core.IpfsNode
 }
 
 func Create(ctx context.Context, c Config, l log.Logger) (*IPFS, error) {
-	coreAPI, err := i.Create(ctx, l, c.Repo)
+	repo, err := ipfs.CreateRepo(ctx, c.Repo)
 	if err != nil {
 		return nil, err
 	}
+	l.Log().Msg("0 :> IPFS repo was created")
+	noptions := ipfs.CreateNodeOptions(repo)
+	l.Log().Msg("1 :> node options was created")
 
-	l = l.With().Str("component", "IPFS").Logger()
+	node, err := ipfs.CreateIPFSNode(ctx, noptions)
+	if err != nil {
+		return nil, err
+	}
+	l.Log().Msg("2 :> node was created")
+
+	coreapi, err := ipfs.CreateCoreAPI(node)
+	if err != nil {
+		return nil, err
+	}
+	l.Log().Msg("3 :> coreapi was created")
 
 	return &IPFS{
 		Config:  c,
 		log:     l,
-		CoreAPI: coreAPI,
-	}, nil
+		CoreAPI: coreapi,
+		node:    node}, nil
+
 }

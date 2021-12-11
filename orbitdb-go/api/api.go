@@ -44,7 +44,7 @@ func Create(c Config, sc http.Config, l log.Logger, s *services.Services) (*API,
 	handlers := spec.HandlerRegistry{}
 
 	eventlogAddReq, err := eventlog.CreateAddRequest(
-		s.OrbitDB,
+	// s.OrbitDB,
 	)
 	if err != nil {
 		return nil, wrapErr(err, "emission request")

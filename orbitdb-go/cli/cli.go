@@ -3,7 +3,6 @@ package cli
 import (
 	"os"
 
-	"github.com/davecgh/go-spew/spew"
 	appConfig "github.com/debridge-finance/orbitdb-go/config"
 	config "github.com/debridge-finance/orbitdb-go/pkg/config"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
@@ -13,10 +12,7 @@ import (
 	cli "github.com/urfave/cli/v2"
 	"gopkg.in/yaml.v2"
 
-	"github.com/debridge-finance/orbitdb-go/api"
-	"github.com/debridge-finance/orbitdb-go/pkg/time"
 	"github.com/debridge-finance/orbitdb-go/services"
-	"github.com/debridge-finance/orbitdb-go/supervisor"
 )
 
 var (
@@ -129,23 +125,24 @@ func RootAction(ctx *cli.Context) error {
 	}
 
 	// FIXME: configuration for supervisor?
-	su := supervisor.New("root", supervisor.NewDelayRestartStrategy(l, 5*time.Second))
+	// su := supervisor.New("root", supervisor.NewDelayRestartStrategy(l, 5*time.Second))
 
 	//
-	spew.Dump([]interface{}{"context", ctx})
+	l.Log().Msg("tratata")
+	_, err = services.Create(*c.Services, l, ctx.Context)
+	if err != nil {
+		return errors.Wrap(err, "failed to create services")
+	}
+	// spew.Dump([]interface{}{"IPFS", ss.IPFS})
+	// return su.Supervise(func() error {
+	// 	s, err := api.Create(*c.Api, *c.Server, l, ss)
+	// 	if err != nil {
+	// 		return errors.Wrap(err, "failed to create API handler")
+	// 	}
 
-	return su.Supervise(func() error {
-		ss, err := services.Create(*c.Services, l, ctx.Context)
-		if err != nil {
-			return errors.Wrap(err, "failed to create services")
-		}
-		s, err := api.Create(*c.Api, *c.Server, l, ss)
-		if err != nil {
-			return errors.Wrap(err, "failed to create API handler")
-		}
-
-		return s.ListenAndServe()
-	})
+	// 	return s.ListenAndServe()
+	// })
+	return nil
 }
 
 //
