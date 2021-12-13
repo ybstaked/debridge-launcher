@@ -47,8 +47,6 @@ require (
 
 require (
 	bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc // indirect
-	berty.tech/go-ipfs-log v1.5.0 // indirect
-	berty.tech/go-orbit-db v1.13.2 // indirect
 	github.com/AndreasBriese/bbloom v0.0.0-20190825152654-46b345b51c96 // indirect
 	github.com/Stebalien/go-bitfield v0.0.1 // indirect
 	github.com/alecthomas/units v0.0.0-20210927113745-59d0afb8317a // indirect
@@ -80,6 +78,7 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.3 // indirect
 	github.com/google/gopacket v1.1.19 // indirect
+	github.com/gopherjs/gopherjs v0.0.0-20190812055157-5d271430af9f // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/hannahhoward/go-pubsub v0.0.0-20200423002714-8d62886cc36e // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
@@ -214,6 +213,7 @@ require (
 	github.com/rs/xid v1.3.0 // indirect
 	github.com/russross/blackfriday/v2 v2.0.1 // indirect
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
+	github.com/smartystreets/assertions v1.0.1 // indirect
 	github.com/spacemonkeygo/spacelog v0.0.0-20180420211403-2296661a0572 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/spf13/afero v1.6.0 // indirect

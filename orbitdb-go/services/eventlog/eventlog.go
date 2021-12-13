@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/debridge-finance/orbitdb-go/pkg/berty.tech/go-orbit-db/stores/replicator"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
 	"github.com/debridge-finance/orbitdb-go/pkg/log"
 	o "github.com/debridge-finance/orbitdb-go/pkg/orbitdb"
@@ -12,11 +11,36 @@ import (
 )
 
 type Eventlog struct {
-	Config Config
-
+	Config   Config
+	Ctx      context.Context
 	log      log.Logger
 	Eventlog o.EventLogStore
 }
+
+func Create(ctx context.Context, c Config, l log.Logger, orbit o.OrbitDB) (*Eventlog, error) {
+
+	elog, err := orbit.Log(ctx, "test", defaultOrbitDBOptions())
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to create orbitdb eventlog storage")
+	}
+
+	l = l.With().Str("component", "eventlogService").Logger()
+	l.Info().Msgf("eventlog storage was created: %v", elog.Address())
+	all := -1
+	err = elog.Load(ctx, all)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to load orbitdb eventlog storage")
+	}
+	l.Info().Msgf("eventlog storage was loaded: %v", elog.Address())
+
+	return &Eventlog{
+		Config:   c,
+		log:      l,
+		Ctx:      ctx,
+		Eventlog: elog,
+	}, nil
+}
+
 type Entry struct {
 	SubmissionId string `bson:"submissionId"`
 	Signature    string `bson:"signature"`
@@ -53,21 +77,29 @@ func (e *Eventlog) Get(hash string) ([]byte, error) {
 	return entryOp.GetValue(), nil
 }
 
-func (e *Eventlog) GetStats() replicator.ReplicationInfo {
-	return e.Eventlog.ReplicationStatus()
+type Stats struct {
+	TotalOplog   int32
+	TotalEntries int32
 }
 
-func Create(ctx context.Context, c Config, l log.Logger, orbit o.OrbitDB) (*Eventlog, error) {
-	elog, err := orbit.Log(ctx, "test", nil)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to create orbitdb eventlog storage")
+func (e *Eventlog) GetStats() *Stats {
+	oplog := e.Eventlog.OpLog()
+	allEntries := oplog.GetEntries()
+	// spew.Dump([]interface{}{"oplog>>>", oplog})
+	// spew.Dump([]interface{}{"allEntries>>>", allEntries})
+	return &Stats{
+		TotalOplog:   int32(oplog.Len()),
+		TotalEntries: int32(allEntries.Len()),
 	}
+}
 
-	l = l.With().Str("component", "orbitdbService").Logger()
+func defaultOrbitDBOptions() *o.CreateDBOptions {
+	options := &o.CreateDBOptions{}
 
-	return &Eventlog{
-		Config:   c,
-		log:      l,
-		Eventlog: elog,
-	}, nil
+	// t := true
+	f := false
+	options.Create = &f
+	options.Overwrite = &f
+
+	return options
 }

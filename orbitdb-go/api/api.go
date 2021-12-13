@@ -45,6 +45,15 @@ func Endpoints(handlers spec.HandlerRegistry) spec.Endpoints {
 			spec.EndpointConsumes(encodingMime),
 			spec.EndpointProduces(encodingMime),
 		),
+		spec.NewEndpoint("get", "/eventlog/stats", "Get eventlog stats",
+			spec.EndpointHandler(handlers.Get("eventlogStatsReq")),
+			spec.EndpointDescription("Get eventlog stats"),
+			spec.EndpointResponse(http.StatusOk, eventlog.StatsRequestResult{}, "Successful operation"),
+			spec.EndpointResponse(http.StatusInternalServerError, http.Error{}, "Internal error occured while creating a get submission by hash req"),
+			spec.EndpointBody(eventlog.StatsRequestResult{}, "", true),
+			spec.EndpointConsumes(encodingMime),
+			spec.EndpointProduces(encodingMime),
+		),
 		// info.CreateGetInfoEndpoint(handlers.Get("getInfo")),
 	}
 
@@ -67,12 +76,19 @@ func Create(c Config, sc http.Config, l log.Logger, s *services.Services) (*API,
 	if err != nil {
 		return nil, wrapErr(err, "failed to create getReq")
 	}
+	eventlogStatsReq, err := eventlog.CreateStatsRequest(
+		s.Eventlog,
+	)
+	if err != nil {
+		return nil, wrapErr(err, "failed to create statsReq")
+	}
 
 	//
 
 	handlers.
 		Add("eventlogGetReq", eventlogGetReq).
-		Add("eventlogAddReq", eventlogAddReq)
+		Add("eventlogAddReq", eventlogAddReq).
+		Add("eventlogStatsReq", eventlogStatsReq)
 
 	//
 

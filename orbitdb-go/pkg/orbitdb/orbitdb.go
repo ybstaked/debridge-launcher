@@ -11,8 +11,9 @@ import (
 )
 
 type (
-	OrbitDB       = odb.OrbitDB
-	EventLogStore = odb.EventLogStore
+	OrbitDB         = odb.OrbitDB
+	EventLogStore   = odb.EventLogStore
+	CreateDBOptions = odb.CreateDBOptions
 )
 
 func Create(ctx context.Context, ipfs i.CoreAPI, dbPath string) (OrbitDB, error) {
