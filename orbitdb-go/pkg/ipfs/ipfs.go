@@ -8,6 +8,7 @@ import (
 
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
 	ipfs_ds "github.com/ipfs/go-datastore"
 	ipfs_cfg "github.com/ipfs/go-ipfs-config"
@@ -60,11 +61,11 @@ func CreateCoreAPI(node *core.IpfsNode) (CoreAPI, error) {
 
 // defaultConnMgrHighWater is the default value for the connection managers
 // 'high water' mark
-const defaultConnMgrHighWater = 50
+const defaultConnMgrHighWater = 500
 
 // defaultConnMgrLowWater is the default value for the connection managers 'low
 // water' mark
-const defaultConnMgrLowWater = 10
+const defaultConnMgrLowWater = 400
 
 // defaultConnMgrGracePeriod is the default value for the connection managers
 // grace period
@@ -120,7 +121,6 @@ var DefaultSwarmListeners = []string{
 
 // save
 func createBaseConfig() (*ipfs_cfg.Config, error) {
-	c := ipfs_cfg.Config{}
 	priv, pub, err := p2p_ci.GenerateKeyPairWithReader(p2p_ci.Ed25519, 2048, crand.Reader) // nolint:staticcheck
 	if err != nil {
 		return nil, err
@@ -136,6 +136,9 @@ func createBaseConfig() (*ipfs_cfg.Config, error) {
 		return nil, err
 	}
 
+	c := ipfs_cfg.Config{}
+	spew.Dump([]interface{}{">>> ipfs config swarm", c.Swarm})
+
 	// set default bootstrap
 	c.Bootstrap = ipfs_cfg.DefaultBootstrapAddresses
 	c.Peering.Peers = []p2p_peer.AddrInfo{}
@@ -146,11 +149,12 @@ func createBaseConfig() (*ipfs_cfg.Config, error) {
 
 	// Discovery
 	c.Discovery.MDNS.Enabled = true
-	c.Discovery.MDNS.Interval = 5
+	c.Discovery.MDNS.Interval = 20
 
 	// swarm listeners
 	c.Addresses.Swarm = DefaultSwarmListeners
 
+	// c.Swarm
 	// Swarm
 	// c.Swarm.AutoRelay.Enabled = true
 	// c.Swarm.EnableRelayHop = false

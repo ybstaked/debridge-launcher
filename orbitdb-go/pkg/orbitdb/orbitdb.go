@@ -11,10 +11,11 @@ import (
 )
 
 type (
-	OrbitDB = odb.OrbitDB
+	OrbitDB       = odb.OrbitDB
+	EventLogStore = odb.EventLogStore
 )
 
-func Create(ctx context.Context, ipfs i.CoreAPI, dbPath string) (*OrbitDB, error) {
+func Create(ctx context.Context, ipfs i.CoreAPI, dbPath string) (OrbitDB, error) {
 	_, err := os.Stat(dbPath)
 	if os.IsNotExist(err) {
 		err = os.Mkdir(dbPath, 0755)
@@ -29,5 +30,5 @@ func Create(ctx context.Context, ipfs i.CoreAPI, dbPath string) (*OrbitDB, error
 	if err != nil {
 		fmt.Printf("failed to create NewOrbitDB: %v", err)
 	}
-	return &orbitdb, nil
+	return orbitdb, nil
 }

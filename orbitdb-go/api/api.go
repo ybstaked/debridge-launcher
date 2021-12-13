@@ -24,14 +24,24 @@ func wrapErr(err error, ctrName string) error {
 func Endpoints(handlers spec.HandlerRegistry) spec.Endpoints {
 	encodingMime := "application/json"
 	return spec.Endpoints{
-		spec.NewEndpoint("post", "/submission", "Request tokens emission", // FIXME: more concrete examples
+		spec.NewEndpoint("post", "/eventlog", "Add new entry to eventlog", // FIXME: more concrete examples
 			spec.EndpointHandler(handlers.Get("eventlogAddReq")),
 			spec.EndpointDescription("This handler creates a request for token emission which awaits approval from operator role"),
-			spec.EndpointResponse(http.StatusCreated, eventlog.RequestResult{}, "Successfully created an eventlog ADD request"),
+			spec.EndpointResponse(http.StatusCreated, eventlog.AddRequestResult{}, "Successfully created an eventlog ADD request"),
 			spec.EndpointResponse(http.StatusBadRequest, http.Error{}, "Body parsing was failed"),
 			spec.EndpointResponse(http.StatusInternalServerError, http.Error{}, "Internal error occured while creating an orbitdb request in blockchain"),
 			spec.EndpointTags("orbitdb"),
-			spec.EndpointBody(eventlog.RequestResult{}, "", true),
+			spec.EndpointBody(eventlog.AddRequestResult{}, "", true),
+			spec.EndpointConsumes(encodingMime),
+			spec.EndpointProduces(encodingMime),
+		),
+		spec.NewEndpoint("get", "/eventlog/{hash}", "Get entry from eventlog by hash",
+			spec.EndpointHandler(handlers.Get("eventlogGetReq")),
+			spec.EndpointDescription("Get submissionn by hash"),
+			spec.EndpointPath("hash", "string", "IPFS hash of entry, entry id in eventlog", true),
+			spec.EndpointResponse(http.StatusOk, eventlog.GetRequestResult{}, "Successful operation"),
+			spec.EndpointResponse(http.StatusInternalServerError, http.Error{}, "Internal error occured while creating a get submission by hash req"),
+			spec.EndpointBody(eventlog.GetRequestResult{}, "", true),
 			spec.EndpointConsumes(encodingMime),
 			spec.EndpointProduces(encodingMime),
 		),
@@ -45,15 +55,23 @@ func Create(c Config, sc http.Config, l log.Logger, s *services.Services) (*API,
 
 	eventlogAddReq, err := eventlog.CreateAddRequest(
 		*c.EventLog, l,
-		s.OrbitDB,
+		s.Eventlog,
 	)
 	if err != nil {
-		return nil, wrapErr(err, "emission request")
+		return nil, wrapErr(err, "failed to create addReq")
+	}
+
+	eventlogGetReq, err := eventlog.CreateGetRequest(
+		s.Eventlog,
+	)
+	if err != nil {
+		return nil, wrapErr(err, "failed to create getReq")
 	}
 
 	//
 
 	handlers.
+		Add("eventlogGetReq", eventlogGetReq).
 		Add("eventlogAddReq", eventlogAddReq)
 
 	//

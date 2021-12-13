@@ -11,11 +11,11 @@ type OrbitDB struct {
 	Config Config
 
 	log     log.Logger
-	OrbitDB *o.OrbitDB
+	OrbitDB o.OrbitDB
 }
 
 func Create(ctx context.Context, c Config, l log.Logger, ipfs i.CoreAPI) (*OrbitDB, error) {
-	o, err := o.Create(ctx, ipfs, c.Repo)
+	orbit, err := o.Create(ctx, ipfs, c.Repo)
 	if err != nil {
 		return nil, err
 	}
@@ -25,6 +25,6 @@ func Create(ctx context.Context, c Config, l log.Logger, ipfs i.CoreAPI) (*Orbit
 	return &OrbitDB{
 		Config:  c,
 		log:     l,
-		OrbitDB: o,
+		OrbitDB: orbit,
 	}, nil
 }
