@@ -62,7 +62,7 @@ func (s *Server) ListenAndServe() error {
 			)
 		}
 	} else {
-		s.log.Debug().Msg("not printing route list because terminal is not attached")
+		s.log.Debug().Msg("do not print route list because terminal is not attached")
 	}
 
 	return s.server.ListenAndServe()
@@ -81,6 +81,7 @@ func New(c Config, l log.Logger, ms Middlewares, es spec.Endpoints, specOpts ...
 			s.Handler(*c.SwaggerCORS),
 			spec.NewSwaggerUIHandler(c.BasePath),
 		) {
+
 			r.AddEndpoint(p)
 		}
 

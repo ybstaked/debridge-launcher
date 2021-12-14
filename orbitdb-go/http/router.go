@@ -50,8 +50,6 @@ func (r *Router) Endpoints() spec.Endpoints {
 	return r.endpoints
 }
 
-////
-
 func NewRouter(basePath string, ms Middlewares, es spec.Endpoints) *Router {
 	r := chi.NewRouter()
 

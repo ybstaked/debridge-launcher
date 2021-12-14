@@ -3,7 +3,7 @@ log:
   level: debug
 server:
   basePath: /api
-  address: 0.0.0.0:8081
+  address: 0.0.0.0:3000
   readtimeout: 30s
   writetimeout: 30s
   middlewares:
@@ -16,6 +16,9 @@ server:
     auth:
       username: d1r1
       password: testpassword123
+      jwt: wuT7ZSIMe4qkfalknf23rlks__nRyXfYweJhcwEq121kdasjdsakj
+      unprotected:
+        - /api/auth: {}
     limit:
       body: 100MB
     log: {}

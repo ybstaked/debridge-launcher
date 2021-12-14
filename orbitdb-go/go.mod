@@ -5,8 +5,9 @@ go 1.17
 require (
 	github.com/btcsuite/btcd v0.22.0-beta
 	github.com/cockroachdb/errors v1.8.6
-	github.com/davecgh/go-spew v1.1.1
 	github.com/go-chi/chi v1.5.4
+	github.com/go-chi/chi/v5 v5.0.4
+	github.com/go-chi/jwtauth/v5 v5.0.2
 	github.com/go-yaml/yaml v2.1.0+incompatible
 	github.com/golang-collections/go-datastructures v0.0.0-20150211160725-59788d5eb259
 	github.com/google/uuid v1.3.0
@@ -65,7 +66,9 @@ require (
 	github.com/cpuguy83/go-md2man/v2 v2.0.0-20190314233015-f79a8a8ca69d // indirect
 	github.com/crackcomm/go-gitignore v0.0.0-20170627025303-887ab5e44cc3 // indirect
 	github.com/cskr/pubsub v1.0.2 // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/davidlazar/go-crypto v0.0.0-20200604182044-b73af7476f6c // indirect
+	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.0-20210816181553-5444fa50b93d // indirect
 	github.com/dgraph-io/badger v1.6.2 // indirect
 	github.com/dgraph-io/ristretto v0.0.2 // indirect
 	github.com/dustin/go-humanize v1.0.0 // indirect
@@ -74,6 +77,7 @@ require (
 	github.com/francoispqt/gojay v1.2.13 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/go-task/slim-sprig v0.0.0-20210107165309-348f09dbbbc0 // indirect
+	github.com/goccy/go-json v0.7.6 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.3 // indirect
@@ -134,6 +138,12 @@ require (
 	github.com/koron/go-ssdp v0.0.2 // indirect
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/kr/text v0.2.0 // indirect
+	github.com/lestrrat-go/backoff/v2 v2.0.8 // indirect
+	github.com/lestrrat-go/blackmagic v1.0.0 // indirect
+	github.com/lestrrat-go/httpcc v1.0.0 // indirect
+	github.com/lestrrat-go/iter v1.0.1 // indirect
+	github.com/lestrrat-go/jwx v1.2.6 // indirect
+	github.com/lestrrat-go/option v1.0.0 // indirect
 	github.com/libp2p/go-addr-util v0.1.0 // indirect
 	github.com/libp2p/go-buffer-pool v0.0.2 // indirect
 	github.com/libp2p/go-cidranger v1.1.0 // indirect

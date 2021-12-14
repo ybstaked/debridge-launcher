@@ -1,7 +1,10 @@
 package api
 
 import (
-	eventlog "github.com/debridge-finance/orbitdb-go/api/eventlog"
+	"github.com/debridge-finance/orbitdb-go/api/auth"
+	"github.com/debridge-finance/orbitdb-go/api/eventlog"
+	"github.com/go-chi/jwtauth/v5"
+
 	// "github.com/debridge-finance/orbitdb-go/handler/info"
 	"github.com/debridge-finance/orbitdb-go/http"
 	"github.com/debridge-finance/orbitdb-go/http/spec"
@@ -24,12 +27,23 @@ func wrapErr(err error, ctrName string) error {
 func Endpoints(handlers spec.HandlerRegistry) spec.Endpoints {
 	encodingMime := "application/json"
 	return spec.Endpoints{
-		spec.NewEndpoint("post", "/eventlog", "Add new entry to eventlog", // FIXME: more concrete examples
+		spec.NewEndpoint("get", "/auth", "Auth and get jwt token for given user", //
+			spec.EndpointHandler(handlers.Get("authReq")),
+			spec.EndpointDescription("This handler creates a request for jwt token emission for given user"),
+			spec.EndpointResponse(http.StatusCreated, auth.JWTRequestResult{}, "Successfully created an auth request"),
+			spec.EndpointResponse(http.StatusBadRequest, http.Error{}, "Body parsing was failed"),
+			spec.EndpointResponse(http.StatusInternalServerError, http.Error{}, "Internal error occured while creating an orbitdb request"),
+			spec.EndpointTags("orbitdb"),
+			spec.EndpointBody(eventlog.AddRequestResult{}, "", true),
+			spec.EndpointConsumes(encodingMime),
+			spec.EndpointProduces(encodingMime),
+		),
+		spec.NewEndpoint("post", "/eventlog", "Add new entry to eventlog", //
 			spec.EndpointHandler(handlers.Get("eventlogAddReq")),
 			spec.EndpointDescription("This handler creates a request for token emission which awaits approval from operator role"),
 			spec.EndpointResponse(http.StatusCreated, eventlog.AddRequestResult{}, "Successfully created an eventlog ADD request"),
 			spec.EndpointResponse(http.StatusBadRequest, http.Error{}, "Body parsing was failed"),
-			spec.EndpointResponse(http.StatusInternalServerError, http.Error{}, "Internal error occured while creating an orbitdb request in blockchain"),
+			spec.EndpointResponse(http.StatusInternalServerError, http.Error{}, "Internal error occured while creating an orbitdb request"),
 			spec.EndpointTags("orbitdb"),
 			spec.EndpointBody(eventlog.AddRequestResult{}, "", true),
 			spec.EndpointConsumes(encodingMime),
@@ -40,7 +54,7 @@ func Endpoints(handlers spec.HandlerRegistry) spec.Endpoints {
 			spec.EndpointDescription("Get submissionn by hash"),
 			spec.EndpointPath("hash", "string", "IPFS hash of entry, entry id in eventlog", true),
 			spec.EndpointResponse(http.StatusOk, eventlog.GetRequestResult{}, "Successful operation"),
-			spec.EndpointResponse(http.StatusInternalServerError, http.Error{}, "Internal error occured while creating a get submission by hash req"),
+			spec.EndpointResponse(http.StatusInternalServerError, http.Error{}, "Internal error occured while creating a get submission by hash request"),
 			spec.EndpointBody(eventlog.GetRequestResult{}, "", true),
 			spec.EndpointConsumes(encodingMime),
 			spec.EndpointProduces(encodingMime),
@@ -49,7 +63,7 @@ func Endpoints(handlers spec.HandlerRegistry) spec.Endpoints {
 			spec.EndpointHandler(handlers.Get("eventlogStatsReq")),
 			spec.EndpointDescription("Get eventlog stats"),
 			spec.EndpointResponse(http.StatusOk, eventlog.StatsRequestResult{}, "Successful operation"),
-			spec.EndpointResponse(http.StatusInternalServerError, http.Error{}, "Internal error occured while creating a get submission by hash req"),
+			spec.EndpointResponse(http.StatusInternalServerError, http.Error{}, "Internal error occured while creating get stats request"),
 			spec.EndpointBody(eventlog.StatsRequestResult{}, "", true),
 			spec.EndpointConsumes(encodingMime),
 			spec.EndpointProduces(encodingMime),
@@ -59,9 +73,21 @@ func Endpoints(handlers spec.HandlerRegistry) spec.Endpoints {
 
 }
 
-func Create(c Config, sc http.Config, l log.Logger, s *services.Services) (*API, error) {
+func Create(c Config, sc http.Config, ac http.AuthMiddlewareConfig, l log.Logger, s *services.Services) (*API, error) {
 	handlers := spec.HandlerRegistry{}
+	c.Auth = &auth.Config{
+		Password: ac.Password,
+		Username: ac.Username,
+		JWT:      ac.JWT,
+	}
+	tokenAuth := jwtauth.New("HS256", []byte(c.Auth.JWT), nil)
 
+	authReq, err := auth.CreateJWTRequest(
+		*c.Auth, l, tokenAuth,
+	)
+	if err != nil {
+		return nil, wrapErr(err, "failed to create addReq")
+	}
 	eventlogAddReq, err := eventlog.CreateAddRequest(
 		*c.EventLog, l,
 		s.Eventlog,
@@ -86,6 +112,7 @@ func Create(c Config, sc http.Config, l log.Logger, s *services.Services) (*API,
 	//
 
 	handlers.
+		Add("authReq", authReq).
 		Add("eventlogGetReq", eventlogGetReq).
 		Add("eventlogAddReq", eventlogAddReq).
 		Add("eventlogStatsReq", eventlogStatsReq)
