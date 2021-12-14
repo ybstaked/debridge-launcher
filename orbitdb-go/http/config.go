@@ -18,8 +18,9 @@ var (
 
 	DefaultMiddlewareConfig = MiddlewareConfig{
 		// XXX: order is important
-		Enable: []string{"logger", "requestid", "log", "pagination"},
+		Enable: []string{"auth", "logger", "requestid", "log", "pagination"},
 
+		Auth:       &DefaultAuthMiddlewareConfig,
 		Limit:      &DefaultLimitMiddlewareConfig,
 		Log:        &DefaultLogMiddlewareConfig,
 		Logger:     &DefaultLoggerMiddlewareConfig,
@@ -100,6 +101,7 @@ func (c Config) Validate() error {
 type MiddlewareConfig struct {
 	Enable []string
 
+	Auth       *AuthMiddlewareConfig
 	Limit      *LimitMiddlewareConfig
 	Log        *LogMiddlewareConfig
 	Logger     *LoggerMiddlewareConfig
@@ -111,6 +113,8 @@ func (c *MiddlewareConfig) SetDefaults() {
 loop:
 	for {
 		switch {
+		case c.Auth == nil:
+			c.Auth = DefaultMiddlewareConfig.Auth
 		case c.Limit == nil:
 			c.Limit = DefaultMiddlewareConfig.Limit
 		case c.Log == nil:
@@ -125,6 +129,7 @@ loop:
 			break loop
 		}
 	}
+	c.Auth.SetDefaults()
 	c.Limit.SetDefaults()
 	c.Log.SetDefaults()
 	c.Logger.SetDefaults()
@@ -133,6 +138,9 @@ loop:
 }
 
 func (c MiddlewareConfig) Validate() error {
+	if c.Auth == nil {
+		return errors.New("auth middleware configuration should be defined")
+	}
 	if c.Limit == nil {
 		return errors.New("limit middleware configuration should be defined")
 	}
@@ -146,7 +154,11 @@ func (c MiddlewareConfig) Validate() error {
 		return errors.New("pagination middleware configuration should be defined")
 	}
 
-	err := c.Limit.Validate()
+	err := c.Auth.Validate()
+	if err != nil {
+		return errors.Wrap(err, "failed to validate auth middleware configuration")
+	}
+	err = c.Limit.Validate()
 	if err != nil {
 		return errors.Wrap(err, "failed to validate limit middleware configuration")
 	}

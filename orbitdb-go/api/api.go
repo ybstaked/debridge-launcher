@@ -94,7 +94,7 @@ func Create(c Config, sc http.Config, l log.Logger, s *services.Services) (*API,
 
 	ms, err := http.CreateMiddlewares(
 		http.DefaultMiddlewareRegistry,
-		http.DefaultMiddlewareConfig,
+		*sc.Middlewares,
 		l,
 	)
 	if err != nil {

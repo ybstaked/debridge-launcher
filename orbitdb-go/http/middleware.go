@@ -9,6 +9,7 @@ import (
 )
 
 const (
+	AuthMiddlewareName       MiddlewareName = "auth"
 	LimitMiddlewareName      MiddlewareName = "limit"
 	LogMiddlewareName        MiddlewareName = "log"
 	LoggerMiddlewareName     MiddlewareName = "logger"
@@ -18,6 +19,7 @@ const (
 
 var (
 	MiddlewareNames = []MiddlewareName{
+		AuthMiddlewareName,
 		LimitMiddlewareName,
 		LogMiddlewareName,
 		LoggerMiddlewareName,
@@ -57,6 +59,7 @@ func (r MiddlewareRegistry) Get(k MiddlewareName) MiddlewareConstructor {
 
 func init() {
 	DefaultMiddlewareRegistry.
+		Register(AuthMiddlewareName, CreateAuthMiddleware).
 		Register(LimitMiddlewareName, CreateLimitMiddleware).
 		Register(LogMiddlewareName, CreateLogMiddleware).
 		Register(LoggerMiddlewareName, CreateLoggerMiddleware).
