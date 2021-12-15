@@ -1,11 +1,13 @@
 package ipfs
 
 var DefaultConfig = Config{
-	Repo: "./data/ipfs",
+	Repo:       "./data/ipfs",
+	IPFSConfig: "./ipfs_config",
 }
 
 type Config struct {
-	Repo string
+	Repo       string
+	IPFSConfig string
 }
 
 func (c *Config) SetDefaults() {
@@ -14,6 +16,8 @@ loop:
 		switch {
 		case c.Repo == "":
 			c.Repo = DefaultConfig.Repo
+		case c.IPFSConfig == "":
+			c.IPFSConfig = DefaultConfig.IPFSConfig
 		default:
 			break loop
 		}

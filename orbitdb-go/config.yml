@@ -16,7 +16,7 @@ server:
     auth:
       username: d1r1
       password: testpassword123
-      jwt: wuT7ZSIMe4qkfalknf23rlks__nRyXfYweJhcwEq121kdasjdsakj
+      jwt: wuT7ZSIMe4qkfalknf23rlks__nRyXfYweJhcwEq
       unprotected:
         - /api/auth: {}
     limit:
@@ -27,8 +27,8 @@ server:
 api: {}
 services:
   ipfs:
-    bootstrapList: [""]
     repo: "./data"
+    defaultConfig: "./ipfs_config"
   orbitdb:
     privateKey: "d23f9e4b12bfda2f64fd8a3141db466a5856787d6cde70b9caafdc9af6bd5770"
     repo: "./data"

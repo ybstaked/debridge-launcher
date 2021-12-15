@@ -23,7 +23,6 @@ func Create(c Config, l log.Logger, ctx context.Context) (*Services, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create IPFS service")
 	}
-	l.Log().Msg("ipfs was created")
 
 	orbitdb, err := so.Create(ctx, *c.OrbitDB, l, ipfs.CoreAPI)
 	if err != nil {
