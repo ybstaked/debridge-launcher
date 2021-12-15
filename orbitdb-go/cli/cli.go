@@ -131,7 +131,6 @@ func RootAction(ctx *cli.Context) error {
 	su := supervisor.New("root", supervisor.NewDelayRestartStrategy(l, 5*time.Second))
 
 	//
-	l.Log().Msg("tratata")
 
 	return su.Supervise(func() error {
 		ss, err := services.Create(*c.Services, l, ctx.Context)

@@ -1,8 +1,6 @@
 package eventlog
 
 import (
-	"fmt"
-
 	"github.com/debridge-finance/orbitdb-go/http"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
 
@@ -40,7 +38,6 @@ func (h *StatsRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *StatsRequest) EventlogStats() (*StatsRequestResult, error) {
-	fmt.Println("eventlogget")
 	total := h.eventlog.GetStats()
 
 	return &StatsRequestResult{

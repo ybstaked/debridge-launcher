@@ -5,7 +5,6 @@ import (
 	"github.com/debridge-finance/orbitdb-go/api/eventlog"
 	"github.com/go-chi/jwtauth/v5"
 
-	// "github.com/debridge-finance/orbitdb-go/handler/info"
 	"github.com/debridge-finance/orbitdb-go/http"
 	"github.com/debridge-finance/orbitdb-go/http/spec"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
