@@ -68,6 +68,15 @@ func Endpoints(handlers spec.HandlerRegistry) spec.Endpoints {
 			spec.EndpointConsumes(encodingMime),
 			spec.EndpointProduces(encodingMime),
 		),
+		spec.NewEndpoint("get", "/eventlog/address", "Get eventlog address",
+			spec.EndpointHandler(handlers.Get("eventlogAddressReq")),
+			spec.EndpointDescription("Get eventlog address"),
+			spec.EndpointResponse(http.StatusOk, eventlog.StatsRequestResult{}, "Successful operation"),
+			spec.EndpointResponse(http.StatusInternalServerError, http.Error{}, "Internal error occured while creating get stats request"),
+			spec.EndpointBody(eventlog.StatsRequestResult{}, "", true),
+			spec.EndpointConsumes(encodingMime),
+			spec.EndpointProduces(encodingMime),
+		),
 		// info.CreateGetInfoEndpoint(handlers.Get("getInfo")),
 	}
 
@@ -108,6 +117,12 @@ func Create(c Config, sc http.Config, ac http.AuthMiddlewareConfig, l log.Logger
 	if err != nil {
 		return nil, wrapErr(err, "failed to create statsReq")
 	}
+	eventlogAddressReq, err := eventlog.CreateAddressRequest(
+		s.Eventlog,
+	)
+	if err != nil {
+		return nil, wrapErr(err, "failed to create addressReq")
+	}
 
 	//
 
@@ -115,7 +130,8 @@ func Create(c Config, sc http.Config, ac http.AuthMiddlewareConfig, l log.Logger
 		Add("authReq", authReq).
 		Add("eventlogGetReq", eventlogGetReq).
 		Add("eventlogAddReq", eventlogAddReq).
-		Add("eventlogStatsReq", eventlogStatsReq)
+		Add("eventlogStatsReq", eventlogStatsReq).
+		Add("eventlogAddressReq", eventlogAddressReq)
 
 	//
 
