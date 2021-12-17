@@ -137,7 +137,7 @@ func RootAction(ctx *cli.Context) error {
 		if err != nil {
 			return errors.Wrap(err, "failed to create services")
 		}
-		s, err := api.Create(*c.Api, *c.Server, *c.Server.Middlewares.Auth, l, ss)
+		s, err := api.Create(*c.Api, *c.Server, l, ss)
 		if err != nil {
 			return errors.Wrap(err, "failed to create API handler")
 		}

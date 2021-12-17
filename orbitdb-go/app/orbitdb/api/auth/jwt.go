@@ -3,7 +3,6 @@ package auth
 import (
 	"encoding/json"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/debridge-finance/orbitdb-go/http"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
 	"github.com/debridge-finance/orbitdb-go/pkg/log"
@@ -45,7 +44,6 @@ func (h *JWTRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		)
 		return
 	}
-	spew.Dump([]interface{}{"params", params})
 
 	if params.Username != h.Config.Username {
 		http.WriteError(

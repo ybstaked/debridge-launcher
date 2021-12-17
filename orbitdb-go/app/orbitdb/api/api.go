@@ -81,12 +81,12 @@ func Endpoints(handlers spec.HandlerRegistry) spec.Endpoints {
 
 }
 
-func Create(c Config, sc http.Config, ac http.AuthMiddlewareConfig, l log.Logger, s *services.Services) (*API, error) {
+func Create(c Config, sc http.Config, l log.Logger, s *services.Services) (*API, error) {
 	handlers := spec.HandlerRegistry{}
 	c.Auth = &auth.Config{
-		Password: ac.Password,
-		Username: ac.Username,
-		JWT:      ac.JWT,
+		Password: sc.Middlewares.Auth.Password,
+		Username: sc.Middlewares.Auth.Username,
+		JWT:      sc.Middlewares.Auth.JWT,
 	}
 	tokenAuth := jwtauth.New("HS256", []byte(c.Auth.JWT), nil)
 
