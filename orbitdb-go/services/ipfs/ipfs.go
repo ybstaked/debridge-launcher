@@ -2,11 +2,13 @@ package ipfs
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
 	ipfs "github.com/debridge-finance/orbitdb-go/pkg/ipfs"
 	"github.com/debridge-finance/orbitdb-go/pkg/log"
 	"github.com/ipfs/go-ipfs/core"
+	"github.com/libp2p/go-libp2p-core/peer"
 )
 
 type IPFS struct {
@@ -14,7 +16,7 @@ type IPFS struct {
 
 	log     log.Logger
 	CoreAPI ipfs.CoreAPI
-	node    *core.IpfsNode
+	Node    *core.IpfsNode
 }
 
 func Create(ctx context.Context, c Config, l log.Logger) (*IPFS, error) {
@@ -49,6 +51,17 @@ func Create(ctx context.Context, c Config, l log.Logger) (*IPFS, error) {
 		Config:  c,
 		log:     l,
 		CoreAPI: coreapi,
-		node:    node}, nil
+		Node:    node}, nil
+
+}
+
+func (i *IPFS) PeerAddrs() []string {
+	peerInfo := i.Node.Peerstore.PeerInfo(peer.ID(i.Node.PeerHost.ID()))
+	var peerInfoPretty []string
+	for _, addr := range peerInfo.Addrs {
+		addrPretty := fmt.Sprintf("%s/%s", addr, peerInfo.ID.Pretty())
+		peerInfoPretty = append(peerInfoPretty, addrPretty)
+	}
+	return peerInfoPretty
 
 }
