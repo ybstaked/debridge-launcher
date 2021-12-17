@@ -1,7 +1,7 @@
 package ipfs
 
 var DefaultConfig = Config{
-	Repo:       "./data/ipfs",
+	Repo:       "./data",
 	IPFSConfig: "./ipfs_config",
 }
 

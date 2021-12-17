@@ -37,7 +37,7 @@ func main() {
 	prev := time.Now()
 	url := "http://139.59.164.64:3000/api/eventlog"
 	fmt.Println("Starting calls to ", url)
-	for i := 10000; i < 400000; i++ {
+	for i := 2002; i <= 3000; i++ {
 		res, err := call(url, i)
 		if err != nil {
 			fmt.Println(err)

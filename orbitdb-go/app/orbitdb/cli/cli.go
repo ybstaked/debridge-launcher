@@ -4,8 +4,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/debridge-finance/orbitdb-go/api"
-	appConfig "github.com/debridge-finance/orbitdb-go/config"
+	"github.com/debridge-finance/orbitdb-go/app/orbitdb/api"
+	appConfig "github.com/debridge-finance/orbitdb-go/app/orbitdb/config"
 	config "github.com/debridge-finance/orbitdb-go/pkg/config"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
 	"github.com/debridge-finance/orbitdb-go/pkg/log"
@@ -25,7 +25,7 @@ var (
 			Aliases: []string{"c"},
 			// EnvVars: []string{config.Config.EnvPrefix + "_CONFIG"},
 			Usage: "path to service configuration file",
-			Value: "config.yml",
+			Value: "configs/orbitdb/config.yml",
 		},
 		&cli.StringFlag{
 			Name:    "address",

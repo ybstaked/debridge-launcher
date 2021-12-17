@@ -667,7 +667,7 @@ func (b *BaseStore) AddOperation(ctx context.Context, op operation.Operation, on
 
 	oplog := b.OpLog()
 
-	e, err := oplog.Append(ctx, data, &ipfslog.AppendOptions{PointerCount: b.referenceCount})
+	e, err := oplog.Append(ctx, data, &ipfslog.AppendOptions{PointerCount: b.referenceCount, Pin: true})
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to append data on log")
 	}
