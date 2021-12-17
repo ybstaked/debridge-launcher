@@ -1,11 +1,13 @@
 package eventlog
 
 var DefaultConfig = Config{
-	Repo: "./data/orbitdb",
+	Repo:  "./data/orbitdb",
+	Limit: -1,
 }
 
 type Config struct {
-	Repo string
+	Repo  string
+	Limit int
 }
 
 func (c *Config) SetDefaults() {
@@ -14,6 +16,8 @@ loop:
 		switch {
 		case c.Repo == "":
 			c.Repo = DefaultConfig.Repo
+		case c.Limit == 0:
+			c.Limit = DefaultConfig.Limit
 		default:
 			break loop
 		}

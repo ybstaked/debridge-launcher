@@ -32,11 +32,16 @@ help: # print defined targets and their comments
 	@grep -Po '^[a-zA-Z%_/\-\s]+:+(\s.*$$|$$)' $(MAKEFILE_LIST)  \
 		| sort                                                   \
 		| sed 's|:.*#|#|;s|#\s*|#|'                              \
-		| column -t -s '#' -o ' | '
+		| column -t -s '#'
 
 .PHONY: build
 build: # build orbitdb binary
-	go build -o orbitdb ./main.go
+	CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-extldflags "-static"' -o orbitdb .
+
+.PHONY: install
+install:
+	go mod tidy
+	go mod vendor
 
 
 .PHONY: docker-build

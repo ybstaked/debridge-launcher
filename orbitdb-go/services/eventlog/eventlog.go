@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
 	"github.com/debridge-finance/orbitdb-go/pkg/log"
 	o "github.com/debridge-finance/orbitdb-go/pkg/orbitdb"
@@ -26,11 +27,11 @@ func Create(ctx context.Context, c Config, l log.Logger, orbit o.OrbitDB) (*Even
 
 	l = l.With().Str("component", "eventlogService").Logger()
 	l.Info().Msgf("eventlog storage was created: %v", elog.Address())
-	all := -1
-	err = elog.Load(ctx, all)
+	err = elog.Load(ctx, c.Limit)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to load orbitdb eventlog storage")
+		l.Error().Msgf("eventlog storage was loaded: %v", elog.Address())
 	}
+
 	l.Info().Msgf("eventlog storage was loaded: %v", elog.Address())
 
 	return &Eventlog{
@@ -73,6 +74,7 @@ func (e *Eventlog) Get(hash string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	spew.Dump([]interface{}{"operation", entryOp.GetOperation()})
 
 	return entryOp.GetValue(), nil
 }
@@ -80,23 +82,31 @@ func (e *Eventlog) Get(hash string) ([]byte, error) {
 type Stats struct {
 	TotalOplog   int32
 	TotalEntries int32
+	FirstKey     string
+	LastKey      string
 }
 
 func (e *Eventlog) GetStats() *Stats {
 	oplog := e.Eventlog.OpLog()
 	allEntries := oplog.GetEntries()
-	// spew.Dump([]interface{}{"oplog>>>", oplog})
-	// spew.Dump([]interface{}{"allEntries>>>", allEntries})
+	keys := allEntries.Keys()
+	fKey, lKey := "", ""
+	if len(keys) > 0 {
+		fKey = keys[0]
+		lKey = keys[len(keys)-1]
+	}
+
 	return &Stats{
 		TotalOplog:   int32(oplog.Len()),
 		TotalEntries: int32(allEntries.Len()),
+		FirstKey:     fKey,
+		LastKey:      lKey,
 	}
 }
 
 func defaultOrbitDBOptions() *o.CreateDBOptions {
 	options := &o.CreateDBOptions{}
 
-	// t := true
 	f := false
 	options.Create = &f
 	options.Overwrite = &f
