@@ -27,9 +27,9 @@ server:
 api: {}
 services:
   ipfs:
-    repo: "./data/orbitdb/"
+    repo: "./data/pinner"
     IPFSConfig: "./configs/orbitdb/ipfs_config"
   orbitdb:
-    repo: "./data/orbitdb/orbitdb"
+    repo: "./data/pinner/orbitdb"
   eventlog:
     limit: -1

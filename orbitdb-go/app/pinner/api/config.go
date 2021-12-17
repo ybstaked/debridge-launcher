@@ -1,8 +1,8 @@
 package api
 
 import (
-	"github.com/debridge-finance/orbitdb-go/api/auth"
-	"github.com/debridge-finance/orbitdb-go/api/eventlog"
+	"github.com/debridge-finance/orbitdb-go/app/pinner/api/auth"
+	"github.com/debridge-finance/orbitdb-go/app/pinner/api/eventlog"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
 )
 
