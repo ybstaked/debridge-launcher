@@ -8,13 +8,15 @@ import (
 )
 
 type StatsRequest struct {
-	eventlog *eventlog.Eventlog // TODO: change to eventlog
+	eventlog *eventlog.Eventlog
 }
 
 type StatsRequestResult struct {
 	// Hash string `json:"hash"             swag_example:"zdpuA"  swag_description:"OrbitDB hash"`
-	TotalOplog   int32 `json:"total_oplog"     swag_example:"f9872d1840D7322E4476C4C08c625Ab9E04d3960"`
-	TotalEntries int32 `json:"total_all_entries"     swag_example:"f9872d1840D7322E4476C4C08c625Ab9E04d3960"`
+	TotalOplog   int32  `json:"total_oplog"     swag_example:"f9872d1840D7322E4476C4C08c625Ab9E04d3960"`
+	TotalEntries int32  `json:"total_all_entries"     swag_example:"f9872d1840D7322E4476C4C08c625Ab9E04d3960"`
+	FirstKey     string `json:"first"     swag_example:"f9872d1840D7322E4476C4C08c625Ab9E04d3960"`
+	LastKey      string `json:"last"     swag_example:"f9872d1840D7322E4476C4C08c625Ab9E04d3960"`
 }
 
 func (h *StatsRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -33,6 +35,8 @@ func (h *StatsRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		&StatsRequestResult{
 			TotalOplog:   res.TotalOplog,
 			TotalEntries: res.TotalEntries,
+			FirstKey:     res.FirstKey,
+			LastKey:      res.LastKey,
 		},
 	)
 }
@@ -43,6 +47,8 @@ func (h *StatsRequest) EventlogStats() (*StatsRequestResult, error) {
 	return &StatsRequestResult{
 		TotalOplog:   int32(total.TotalOplog),
 		TotalEntries: int32(total.TotalEntries),
+		FirstKey:     total.FirstKey,
+		LastKey:      total.LastKey,
 	}, nil
 }
 

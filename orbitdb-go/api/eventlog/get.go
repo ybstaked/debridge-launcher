@@ -2,7 +2,6 @@ package eventlog
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/debridge-finance/orbitdb-go/http"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
@@ -44,7 +43,6 @@ func (h *GetRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *GetRequest) EventlogGet(hash string) (*GetRequestResult, error) {
-	fmt.Println("eventlogget")
 	vb, err := h.eventlog.Get(hash)
 	if err != nil {
 		return nil, err
