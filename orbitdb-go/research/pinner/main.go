@@ -6,6 +6,7 @@ import (
 	"os"
 	"sync"
 	"syscall"
+	"time"
 
 	"github.com/debridge-finance/orbitdb-go/pkg/berty.tech/go-orbit-db/iface"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
@@ -43,7 +44,7 @@ func (p *Pinner) Add(ctx context.Context, address string) error {
 	if exists {
 		return errors.Wrap(ErrorAlreadyExists, address)
 	}
-	elog, err := p.odb.OrbitDB.Open(ctx, address, defaultOrbitDBOptions())
+	elog, err := p.odb.OrbitDB.Log(ctx, address, defaultOrbitDBOptions())
 	if err != nil {
 		return errors.Wrap(err, "create orbitdb eventlog")
 	}
@@ -72,16 +73,6 @@ func (p *Pinner) Remove(address string) error {
 	return nil
 }
 
-func (p *Pinner) replicate(ctx context.Context, store iface.Store, wg *sync.WaitGroup, errc chan error) {
-	// store
-	status := store.ReplicationStatus()
-	fmt.Printf("status %+v\n", status)
-	// evtch := replicator.Subscribe(ctx)
-
-	wg.Done()
-
-}
-
 func (p *Pinner) Start(ctx context.Context, errc chan error) error {
 	var wg sync.WaitGroup
 	for _, store := range p.PinningList {
@@ -95,7 +86,44 @@ func (p *Pinner) Start(ctx context.Context, errc chan error) error {
 	// errc <- errors.New("test error chan")
 	return nil
 }
-func (p *Pinner) Stats(address string) error { return nil }
+
+func (p *Pinner) replicate(ctx context.Context, store iface.Store, wg *sync.WaitGroup, errc chan error) {
+	defer wg.Done()
+	// ch := store.Replicator().Subscribe(ctx)
+
+	for {
+		// v, ok := <-ch
+		// if !ok {
+		// 	break
+
+		// }
+		// fmt.Printf("queue: %v\n", store.Replicator().GetQueue())
+		// fmt.Printf("value: %v\n", v)
+		// entries := store.OpLog().GetEntries().Slice()
+		// var first, _ log_iface.IPFSLogEntry
+		// if len(entries) > 0 {
+		// 	first = entries[0]
+		// 	// last = entries[len(entries)-1]
+		// }
+		// first.GetHash()
+		fmt.Printf("%v\tprogress: %v\tbufferLen: %v\n", store.Address(), store.ReplicationStatus().GetProgress(), store.Replicator().GetBufferLen())
+		// fmt.Printf("%v\tprogress: %v\tbufferLen: %v\t\first:\ntime:%+v\thash:%v\nlast:\ntime:%+v\thash:%v\n", store.Address(), store.ReplicationStatus().GetProgress(), store.Replicator().GetBufferLen(), first.GetClock(), first.GetHash().Hash(), last.GetClock(), last.GetHash().Hash())
+
+		time.Sleep(60 * time.Second)
+
+	}
+	// store
+	// evtch := replicator.Subscribe(ctx)
+
+}
+
+type PinnerStats struct {
+}
+
+func (p *Pinner) Stats(address string) error {
+
+	return nil
+}
 
 func main() {
 	//
@@ -127,12 +155,18 @@ func main() {
 	l.Info().Msg("pinner was created")
 
 	pinnnerCtx := context.WithValue(rootCtx, "service3", "pinnerCtx_111")
-
-	err = pinner.Add(pinnnerCtx, "/orbitdb/bafyreibx6dv6yms5225ikrsirgb2zupmc6muhk7ayoa5oekny3uef5u6yq/test")
+	s1 := "/orbitdb/bafyreihrgrfr4m74wkesroranlra7yf2kgqs2n3icfy76flwzzngjw3sba/test" // london
+	s2 := "/orbitdb/bafyreigzsnrsa62hpw6udbi7nmxhhdgi46d5wxfpoiqa2lgm2ovu6tkewu/test" // frankfurt
+	err = pinner.Add(pinnnerCtx, s1)
 	if err != nil {
 		fmt.Println(errors.Wrap(err, "failed to add store to pinner"))
 	}
-	l.Info().Msg("add store to pinning list")
+	l.Info().Msgf("add store %v to pinning list", s1)
+	err = pinner.Add(pinnnerCtx, s2)
+	if err != nil {
+		fmt.Println(errors.Wrap(err, "failed to add store to pinner"))
+	}
+	l.Info().Msgf("add store %v to pinning list", s2)
 
 	errc := make(chan error)
 	sig := make(chan os.Signal)

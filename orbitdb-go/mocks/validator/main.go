@@ -33,11 +33,17 @@ func call(url string, i int) (string, error) {
 	return string(body), nil
 }
 
+const (
+	LONDON_ADDRESS    = "139.59.164.64"
+	FRANKFURT_ADDRESS = "161.35.31.27"
+)
+
 func main() {
 	prev := time.Now()
-	url := "http://139.59.164.64:3000/api/eventlog"
+	url := fmt.Sprintf("http://%s:3000/api/eventlog", FRANKFURT_ADDRESS)
+
 	fmt.Println("Starting calls to ", url)
-	for i := 2002; i <= 3000; i++ {
+	for i := 1; i <= 1000; i++ {
 		res, err := call(url, i)
 		if err != nil {
 			fmt.Println(err)
