@@ -1,6 +1,9 @@
 package auth
 
 import (
+	"encoding/json"
+
+	"github.com/davecgh/go-spew/spew"
 	"github.com/debridge-finance/orbitdb-go/http"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
 	"github.com/debridge-finance/orbitdb-go/pkg/log"
@@ -15,32 +18,43 @@ type JWTRequest struct {
 }
 
 type JWTRequestParams struct {
-	Username string `json:"username"     swag_example:"f9872d1840D7322E4476C4C08c625Ab9E04d3960"`
-	Password string `json:"password"`
+	Username string `json:"login"     swag_example:"login"`
+	Password string `json:"password"  swag_example:"password"`
 }
 
 type JWTRequestResult struct {
-	JWT string `json:"jwt"             swag_example:"zdpuA"  swag_description:"OrbitDB hash"`
+	JWT string `json:"accessToken"             swag_example:"zdpuA"  swag_description:"OrbitDB hash"`
 }
 
 func (h *JWTRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	u, p, ok := r.BasicAuth()
-	if !ok {
+	params := &JWTRequestParams{}
+
+	err := json.NewDecoder(r.Body).Decode(params)
+	if err != nil {
+		http.WriteError(w, r, http.StatusBadRequest, err)
+		return
+	}
+	r.Body.Close()
+
+	err = params.Validate()
+	if err != nil {
 		http.WriteError(
-			w, r, http.StatusUnauthorized,
-			errors.New("Error parsing basic auth"),
+			w, r, http.StatusBadRequest,
+			errors.Wrap(err, "failed to validate request parameters"),
 		)
 		return
 	}
-	if u != h.Config.Username {
+	spew.Dump([]interface{}{"params", params})
+
+	if params.Username != h.Config.Username {
 		http.WriteError(
 			w, r, http.StatusUnauthorized,
 			errors.New("Username is not correct"),
 		)
 		return
 	}
-	if p != h.Config.Password {
+	if params.Password != h.Config.Password {
 		http.WriteError(
 			w, r, http.StatusUnauthorized,
 			errors.New("Password is not correct"),
@@ -48,11 +62,11 @@ func (h *JWTRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, tokenString, err := h.tokenAuth.Encode(map[string]interface{}{"username": u})
+	_, tokenString, err := h.tokenAuth.Encode(map[string]interface{}{"username": params.Username})
 	if err != nil {
 		http.WriteError(
 			w, r, http.StatusUnauthorized,
-			errors.Wrapf(err, "Failed to encode jwt for username %s\n", u),
+			errors.Wrapf(err, "Failed to encode jwt for username %s\n", params.Username),
 		)
 		return
 	}

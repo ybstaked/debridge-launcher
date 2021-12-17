@@ -26,14 +26,14 @@ func wrapErr(err error, ctrName string) error {
 func Endpoints(handlers spec.HandlerRegistry) spec.Endpoints {
 	encodingMime := "application/json"
 	return spec.Endpoints{
-		spec.NewEndpoint("get", "/auth", "Auth and get jwt token for given user", //
+		spec.NewEndpoint("post", "/auth", "Auth and get jwt token for given user", //
 			spec.EndpointHandler(handlers.Get("authReq")),
 			spec.EndpointDescription("This handler creates a request for jwt token emission for given user"),
 			spec.EndpointResponse(http.StatusCreated, auth.JWTRequestResult{}, "Successfully created an auth request"),
 			spec.EndpointResponse(http.StatusBadRequest, http.Error{}, "Body parsing was failed"),
 			spec.EndpointResponse(http.StatusInternalServerError, http.Error{}, "Internal error occured while creating an orbitdb request"),
 			spec.EndpointTags("orbitdb"),
-			spec.EndpointBody(eventlog.AddRequestResult{}, "", true),
+			spec.EndpointBody(auth.JWTRequestResult{}, "", true),
 			spec.EndpointConsumes(encodingMime),
 			spec.EndpointProduces(encodingMime),
 		),
