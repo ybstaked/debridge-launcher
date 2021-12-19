@@ -6,7 +6,7 @@ import (
 	"github.com/debridge-finance/orbitdb-go/http"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
 
-	"github.com/debridge-finance/orbitdb-go/services/eventlog"
+	"github.com/debridge-finance/orbitdb-go/pkg/services/eventlog"
 )
 
 type GetRequest struct {

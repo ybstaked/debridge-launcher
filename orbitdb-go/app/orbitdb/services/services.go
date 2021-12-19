@@ -4,9 +4,9 @@ import (
 	"github.com/debridge-finance/orbitdb-go/pkg/context"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
 	"github.com/debridge-finance/orbitdb-go/pkg/log"
-	se "github.com/debridge-finance/orbitdb-go/services/eventlog"
-	si "github.com/debridge-finance/orbitdb-go/services/ipfs"
-	so "github.com/debridge-finance/orbitdb-go/services/orbitdb"
+	se "github.com/debridge-finance/orbitdb-go/pkg/services/eventlog"
+	si "github.com/debridge-finance/orbitdb-go/pkg/services/ipfs"
+	so "github.com/debridge-finance/orbitdb-go/pkg/services/orbitdb"
 )
 
 type Services struct {

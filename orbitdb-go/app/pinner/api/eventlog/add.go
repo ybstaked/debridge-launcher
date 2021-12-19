@@ -7,7 +7,7 @@ import (
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
 	"github.com/debridge-finance/orbitdb-go/pkg/log"
 
-	"github.com/debridge-finance/orbitdb-go/services/eventlog"
+	"github.com/debridge-finance/orbitdb-go/pkg/services/eventlog"
 )
 
 type AddRequest struct {

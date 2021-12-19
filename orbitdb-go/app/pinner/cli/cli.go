@@ -15,7 +15,7 @@ import (
 	cli "github.com/urfave/cli/v2"
 	"gopkg.in/yaml.v2"
 
-	"github.com/debridge-finance/orbitdb-go/services"
+	"github.com/debridge-finance/orbitdb-go/app/pinner/services"
 )
 
 var (

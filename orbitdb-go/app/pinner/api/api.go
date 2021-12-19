@@ -5,12 +5,12 @@ import (
 	"github.com/debridge-finance/orbitdb-go/app/pinner/api/eventlog"
 	"github.com/go-chi/jwtauth/v5"
 
+	"github.com/debridge-finance/orbitdb-go/app/pinner/services"
 	"github.com/debridge-finance/orbitdb-go/http"
 	"github.com/debridge-finance/orbitdb-go/http/spec"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
 	"github.com/debridge-finance/orbitdb-go/pkg/log"
 	"github.com/debridge-finance/orbitdb-go/pkg/meta"
-	"github.com/debridge-finance/orbitdb-go/services"
 )
 
 type API struct {

@@ -2,23 +2,23 @@ package services
 
 import (
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
-	"github.com/debridge-finance/orbitdb-go/services/eventlog"
-	"github.com/debridge-finance/orbitdb-go/services/ipfs"
-	"github.com/debridge-finance/orbitdb-go/services/orbitdb"
+	"github.com/debridge-finance/orbitdb-go/pkg/services/ipfs"
+	"github.com/debridge-finance/orbitdb-go/pkg/services/orbitdb"
+	"github.com/debridge-finance/orbitdb-go/pkg/services/pinner"
 )
 
 var DefaultConfig = Config{
-	IPFS:     &ipfs.DefaultConfig,
-	OrbitDB:  &orbitdb.DefaultConfig,
-	Eventlog: &eventlog.DefaultConfig,
+	IPFS:    &ipfs.DefaultConfig,
+	OrbitDB: &orbitdb.DefaultConfig,
+	Pinner:  &pinner.DefaultConfig,
 }
 
 //
 
 type Config struct {
-	IPFS     *ipfs.Config
-	OrbitDB  *orbitdb.Config
-	Eventlog *eventlog.Config
+	IPFS    *ipfs.Config
+	OrbitDB *orbitdb.Config
+	Pinner  *pinner.Config
 }
 
 func (c *Config) SetDefaults() {
@@ -29,8 +29,8 @@ loop:
 			c.IPFS = DefaultConfig.IPFS
 		case c.OrbitDB == nil:
 			c.OrbitDB = DefaultConfig.OrbitDB
-		case c.Eventlog == nil:
-			c.Eventlog = DefaultConfig.Eventlog
+		case c.Pinner == nil:
+			c.Pinner = DefaultConfig.Pinner
 		default:
 			break loop
 		}
@@ -38,7 +38,7 @@ loop:
 
 	c.IPFS.SetDefaults()
 	c.OrbitDB.SetDefaults()
-	c.Eventlog.SetDefaults()
+	c.Pinner.SetDefaults()
 }
 
 func (c Config) Validate() error {
@@ -50,9 +50,9 @@ func (c Config) Validate() error {
 	if err != nil {
 		return errors.Wrap(err, "failed to validate orbitdb configuration")
 	}
-	err = c.Eventlog.Validate()
+	err = c.Pinner.Validate()
 	if err != nil {
-		return errors.Wrap(err, "failed to validate eventlog configuration")
+		return errors.Wrap(err, "failed to validate pinner configuration")
 	}
 	return nil
 }

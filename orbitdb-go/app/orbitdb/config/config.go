@@ -2,10 +2,10 @@ package config
 
 import (
 	"github.com/debridge-finance/orbitdb-go/app/orbitdb/api"
+	"github.com/debridge-finance/orbitdb-go/app/orbitdb/services"
 	"github.com/debridge-finance/orbitdb-go/http"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
 	"github.com/debridge-finance/orbitdb-go/pkg/log"
-	"github.com/debridge-finance/orbitdb-go/services"
 )
 
 const (
