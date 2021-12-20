@@ -3,6 +3,7 @@ package asset
 import (
 	"encoding/json"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/debridge-finance/orbitdb-go/http"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
 	"github.com/debridge-finance/orbitdb-go/pkg/log"
@@ -18,9 +19,19 @@ type AddRequest struct {
 }
 
 type AddRequestParams struct {
-	SubmissionId string `json:"submissionId"     swag_example:"f9872d1840D7322E4476C4C08c625Ab9E04d3960"`
-	Signature    string `json:"signature"`
-	Event        string `json:"event"  swag_description:"json tx event with current submission"`
+	DeployId  string   `json:"deployId"     swag_example:"f9872d1840D7322E4476C4C08c625Ab9E04d3960"`
+	Signature string   `json:"signature"`
+	Payload   *Payload `json:"payload"  swag_description:"json with payload to create new asset confirmation"`
+}
+
+type Payload struct {
+	DebridgeId    string `json:"debridgeId" swag_description:"DebridgeId"`
+	DeployId      string `json:"deployId" swag_description:"DeployId"`
+	TokenAddress  string `json:"tokenAddress" swag_description:"TokenAddress"`
+	Name          string `json:"name" swag_description:"Name"`
+	Symbol        string `json:"symbol" swag_description:"Symbol"`
+	NativeChainId int64  `json:"nativeChainId" swag_description:"NativeChainId"`
+	Decimals      int64  `json:"decimals" swag_description:"Decimals"`
 }
 
 type AddRequestResult struct {
@@ -30,7 +41,7 @@ type AddRequestResult struct {
 func (h *AddRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var (
 		params = &AddRequestParams{}
-		e      = &eventlog.Entry{}
+		// payload     = &eventlog.Entry{}
 	)
 
 	err := json.NewDecoder(r.Body).Decode(params)
@@ -40,7 +51,6 @@ func (h *AddRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	r.Body.Close()
 
-	params.SetDefaults()
 	err = params.Validate()
 	if err != nil {
 		http.WriteError(
@@ -49,18 +59,18 @@ func (h *AddRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		)
 		return
 	}
+	spew.Dump([]interface{}{"params", params})
+	// err = h.ParametersToModel(params, e)
+	// if err != nil {
+	// 	http.WriteErrorMsg(
+	// 		w, r, http.StatusInternalServerError,
+	// 		errors.Wrap(err, "failed to cast parameters to emitent model"),
+	// 		http.StatusText(http.StatusInternalServerError),
+	// 	)
+	// 	return
+	// }
 
-	err = h.ParametersToModel(params, e)
-	if err != nil {
-		http.WriteErrorMsg(
-			w, r, http.StatusInternalServerError,
-			errors.Wrap(err, "failed to cast parameters to emitent model"),
-			http.StatusText(http.StatusInternalServerError),
-		)
-		return
-	}
-
-	hash, err := h.AddToEventlog(e)
+	hash, err := h.AddToEventlog(params)
 	if err != nil {
 		http.WriteErrorMsg(
 			w, r, http.StatusInternalServerError,
@@ -77,22 +87,19 @@ func (h *AddRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	)
 }
 
-func (h *AddRequest) AddToEventlog(e *eventlog.Entry) (string, error) {
-
-	hash, err := h.eventlog.Add(e)
+func (h *AddRequest) AddToEventlog(p *AddRequestParams) (string, error) {
+	b, err := json.Marshal(p)
 	if err != nil {
 		return "", err
 	}
-	h.log.Debug().Msg("AddToOrbitdb")
+
+	hash, err := h.eventlog.AddBinary(b)
+	if err != nil {
+		return "", err
+	}
+	h.log.Debug().Msg("AddToEventlogAsset")
 
 	return hash, nil
-}
-func (h *AddRequest) ParametersToModel(p *AddRequestParams, e *eventlog.Entry) error {
-	e.SubmissionId = p.SubmissionId
-	e.Signature = p.Signature
-	e.Event = p.Event
-
-	return nil
 }
 
 func (p *AddRequestParams) SetDefaults() {
@@ -107,7 +114,9 @@ loop:
 
 func (p *AddRequestParams) Validate() error {
 	// var err error
-
+	if p.Payload == nil {
+		return errors.New("payload field should not be empty")
+	}
 	return nil
 }
 

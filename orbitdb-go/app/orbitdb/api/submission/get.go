@@ -15,9 +15,9 @@ type GetRequest struct {
 
 type GetRequestResult struct {
 	// Hash string `json:"hash"             swag_example:"zdpuA"  swag_description:"OrbitDB hash"`
-	SubmissionId string `json:"submissionId"     swag_example:"f9872d1840D7322E4476C4C08c625Ab9E04d3960"`
-	Signature    string `json:"signature"`
-	Event        string `json:"event"  swag_description:"json tx event with current submission"`
+	SubmissionId string   `json:"submissionId"     swag_example:"f9872d1840D7322E4476C4C08c625Ab9E04d3960"`
+	Signature    string   `json:"signature"`
+	Payload      *Payload `json:"payload"  swag_description:"json with payload to create new asset confirmation"`
 }
 
 func (h *GetRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -37,7 +37,7 @@ func (h *GetRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		&GetRequestResult{
 			SubmissionId: res.SubmissionId,
 			Signature:    res.Signature,
-			Event:        res.Event,
+			Payload:      res.Payload,
 		},
 	)
 }

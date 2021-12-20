@@ -10,14 +10,13 @@ import (
 )
 
 type GetRequest struct {
-	submission *eventlog.Eventlog
+	asset *eventlog.Eventlog
 }
 
 type GetRequestResult struct {
-	// Hash string `json:"hash"             swag_example:"zdpuA"  swag_description:"OrbitDB hash"`
-	SubmissionId string `json:"submissionId"     swag_example:"f9872d1840D7322E4476C4C08c625Ab9E04d3960"`
-	Signature    string `json:"signature"`
-	Event        string `json:"event"  swag_description:"json tx event with current submission"`
+	DeployId  string   `json:"deployId"     swag_example:"f9872d1840D7322E4476C4C08c625Ab9E04d3960"`
+	Signature string   `json:"signature"`
+	Payload   *Payload `json:"payload"  swag_description:"json with payload to create new asset confirmation"`
 }
 
 func (h *GetRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -35,15 +34,15 @@ func (h *GetRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	http.Write(
 		w, r, http.StatusOk,
 		&GetRequestResult{
-			SubmissionId: res.SubmissionId,
-			Signature:    res.Signature,
-			Event:        res.Event,
+			DeployId:  res.DeployId,
+			Signature: res.Signature,
+			Payload:   res.Payload,
 		},
 	)
 }
 
 func (h *GetRequest) EventlogGet(hash string) (*GetRequestResult, error) {
-	vb, err := h.submission.Get(hash)
+	vb, err := h.asset.Get(hash)
 	if err != nil {
 		return nil, err
 	}
@@ -60,6 +59,6 @@ func (h *GetRequest) EventlogGet(hash string) (*GetRequestResult, error) {
 
 func CreateGetRequest(e *eventlog.Eventlog) (*GetRequest, error) {
 	return &GetRequest{
-		submission: e,
+		asset: e,
 	}, nil
 }

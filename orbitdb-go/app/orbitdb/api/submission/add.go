@@ -18,9 +18,20 @@ type AddRequest struct {
 }
 
 type AddRequestParams struct {
-	SubmissionId string `json:"submissionId"     swag_example:"f9872d1840D7322E4476C4C08c625Ab9E04d3960"`
-	Signature    string `json:"signature"`
-	Event        string `json:"event"  swag_description:"json tx event with current submission"`
+	SubmissionId string   `json:"submissionId"     swag_example:"f9872d1840D7322E4476C4C08c625Ab9E04d3960"`
+	Signature    string   `json:"signature"`
+	Payload      *Payload `json:"payload"  swag_description:"json with payload to create new submission"`
+}
+
+type Payload struct {
+	TxHash       string `json:"txHash" swag_description:"TxHash"`
+	SubmissionId string `json:"submissionId" swag_description:"SubmissionId"`
+	ChainFrom    int64  `json:"chainFrom" swag_description:"ChainFrom"`
+	ChainTo      int64  `json:"chainTo" swag_description:"ChainTo"`
+	DebridgeId   string `json:"debridgeId" swag_description:"DebridgeId"`
+	ReceiverAddr string `json:"receiverAddr" swag_description:"ReceiverAddr"`
+	Amount       string `json:"amount" swag_description:"Amount"`
+	EventRaw     string `json:"eventRaw" swag_description:"EventRaw"`
 }
 
 type AddRequestResult struct {
@@ -30,7 +41,6 @@ type AddRequestResult struct {
 func (h *AddRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var (
 		params = &AddRequestParams{}
-		e      = &eventlog.Entry{}
 	)
 
 	err := json.NewDecoder(r.Body).Decode(params)
@@ -50,17 +60,7 @@ func (h *AddRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.ParametersToModel(params, e)
-	if err != nil {
-		http.WriteErrorMsg(
-			w, r, http.StatusInternalServerError,
-			errors.Wrap(err, "failed to cast parameters to emitent model"),
-			http.StatusText(http.StatusInternalServerError),
-		)
-		return
-	}
-
-	hash, err := h.AddToEventlog(e)
+	hash, err := h.AddToEventlog(params)
 	if err != nil {
 		http.WriteErrorMsg(
 			w, r, http.StatusInternalServerError,
@@ -77,22 +77,18 @@ func (h *AddRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	)
 }
 
-func (h *AddRequest) AddToEventlog(e *eventlog.Entry) (string, error) {
-
-	hash, err := h.eventlog.Add(e)
+func (h *AddRequest) AddToEventlog(p *AddRequestParams) (string, error) {
+	b, err := json.Marshal(p)
 	if err != nil {
 		return "", err
 	}
-	h.log.Debug().Msg("AddToOrbitdb")
+	hash, err := h.eventlog.AddBinary(b)
+	if err != nil {
+		return "", err
+	}
+	h.log.Debug().Msg("AddToEventlogSubmission")
 
 	return hash, nil
-}
-func (h *AddRequest) ParametersToModel(p *AddRequestParams, e *eventlog.Entry) error {
-	e.SubmissionId = p.SubmissionId
-	e.Signature = p.Signature
-	e.Event = p.Event
-
-	return nil
 }
 
 func (p *AddRequestParams) SetDefaults() {

@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
 	"github.com/debridge-finance/orbitdb-go/pkg/log"
 	"github.com/debridge-finance/orbitdb-go/pkg/orbitdb"
@@ -88,7 +87,6 @@ func (e *Eventlog) Get(hash string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	spew.Dump([]interface{}{"operation", entryOp.GetOperation()})
 
 	return entryOp.GetValue(), nil
 }
