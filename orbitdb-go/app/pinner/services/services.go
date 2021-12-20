@@ -31,7 +31,10 @@ func Create(c Config, l log.Logger, ctx context.Context) (*Services, error) {
 		return nil, errors.Wrap(err, "failed to create orbitdb services")
 	}
 
-	pinner, err := sp.Create(ctx, *c.Pinner, l, ipfs.CoreAPI, orbitdb.OrbitDB)
+	pinner, err := sp.Create(ctx, *c.Pinner, l, orbitdb.OrbitDB)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to create pinner services")
+	}
 
 	return &Services{
 		Config: c,

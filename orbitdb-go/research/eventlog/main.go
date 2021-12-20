@@ -12,8 +12,8 @@ import (
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
 	"github.com/debridge-finance/orbitdb-go/pkg/log"
 	"github.com/debridge-finance/orbitdb-go/pkg/orbitdb"
-	si "github.com/debridge-finance/orbitdb-go/services/ipfs"
-	so "github.com/debridge-finance/orbitdb-go/services/orbitdb"
+	si "github.com/debridge-finance/orbitdb-go/pkg/services/ipfs"
+	so "github.com/debridge-finance/orbitdb-go/pkg/services/orbitdb"
 )
 
 var address = "/orbitdb/bafyreihrgrfr4m74wkesroranlra7yf2kgqs2n3icfy76flwzzngjw3sba/test"

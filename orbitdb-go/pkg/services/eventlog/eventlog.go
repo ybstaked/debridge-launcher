@@ -7,7 +7,7 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
 	"github.com/debridge-finance/orbitdb-go/pkg/log"
-	o "github.com/debridge-finance/orbitdb-go/pkg/orbitdb"
+	"github.com/debridge-finance/orbitdb-go/pkg/orbitdb"
 	cid "github.com/ipfs/go-cid"
 )
 
@@ -15,12 +15,12 @@ type Eventlog struct {
 	Config   Config
 	Ctx      context.Context
 	log      log.Logger
-	Eventlog o.EventLogStore
+	Eventlog orbitdb.EventLogStore
 }
 
-func Create(ctx context.Context, c Config, l log.Logger, orbit o.OrbitDB) (*Eventlog, error) {
+func Create(ctx context.Context, c Config, l log.Logger, odb orbitdb.OrbitDB) (*Eventlog, error) {
 
-	elog, err := orbit.Log(ctx, "test", defaultOrbitDBOptions())
+	elog, err := odb.Log(ctx, c.Name, defaultOrbitDBOptions())
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create orbitdb eventlog storage")
 	}
@@ -104,8 +104,8 @@ func (e *Eventlog) GetStats() *Stats {
 	}
 }
 
-func defaultOrbitDBOptions() *o.CreateDBOptions {
-	options := &o.CreateDBOptions{}
+func defaultOrbitDBOptions() *orbitdb.CreateDBOptions {
+	options := &orbitdb.CreateDBOptions{}
 
 	f := false
 	options.Create = &f

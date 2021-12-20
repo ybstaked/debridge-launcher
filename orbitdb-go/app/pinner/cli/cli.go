@@ -25,7 +25,7 @@ var (
 			Aliases: []string{"c"},
 			// EnvVars: []string{config.Config.EnvPrefix + "_CONFIG"},
 			Usage: "path to service configuration file",
-			Value: "configs/pinner/config.yml",
+			Value: "app/pinner/config.yml",
 		},
 		&cli.StringFlag{
 			Name:    "address",
@@ -137,6 +137,7 @@ func RootAction(ctx *cli.Context) error {
 		if err != nil {
 			return errors.Wrap(err, "failed to create services")
 		}
+
 		s, err := api.Create(*c.Api, *c.Server, l, ss)
 		if err != nil {
 			return errors.Wrap(err, "failed to create API handler")

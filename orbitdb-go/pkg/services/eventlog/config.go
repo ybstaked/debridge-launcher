@@ -2,11 +2,13 @@ package eventlog
 
 var DefaultConfig = Config{
 	Repo:  "./data/orbitdb",
+	Name:  "debridge-eventlog",
 	Limit: -1,
 }
 
 type Config struct {
 	Repo  string
+	Name  string
 	Limit int
 }
 
@@ -16,6 +18,8 @@ loop:
 		switch {
 		case c.Repo == "":
 			c.Repo = DefaultConfig.Repo
+		case c.Name == "":
+			c.Name = DefaultConfig.Name
 		case c.Limit == 0:
 			c.Limit = DefaultConfig.Limit
 		default:

@@ -12,8 +12,8 @@ import (
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
 	"github.com/debridge-finance/orbitdb-go/pkg/log"
 	"github.com/debridge-finance/orbitdb-go/pkg/orbitdb"
-	si "github.com/debridge-finance/orbitdb-go/services/ipfs"
-	so "github.com/debridge-finance/orbitdb-go/services/orbitdb"
+	si "github.com/debridge-finance/orbitdb-go/pkg/services/ipfs"
+	so "github.com/debridge-finance/orbitdb-go/pkg/services/orbitdb"
 )
 
 var (
@@ -26,6 +26,7 @@ type (
 	Pinner      struct {
 		PinningList PinningList
 		odb         *so.OrbitDB
+		lock        sync.RWMutex
 	}
 )
 
@@ -40,6 +41,9 @@ func NewPinner(odb *so.OrbitDB) *Pinner {
 
 //
 func (p *Pinner) Add(ctx context.Context, address string) error {
+	p.lock.Lock()
+	defer p.lock.Unlock()
+
 	_, exists := p.PinningList[address]
 	if exists {
 		return errors.Wrap(ErrorAlreadyExists, address)
@@ -48,7 +52,9 @@ func (p *Pinner) Add(ctx context.Context, address string) error {
 	if err != nil {
 		return errors.Wrap(err, "create orbitdb eventlog")
 	}
+
 	p.PinningList[address] = elog
+
 	return nil
 }
 
@@ -89,9 +95,9 @@ func (p *Pinner) Start(ctx context.Context, errc chan error) error {
 
 func (p *Pinner) replicate(ctx context.Context, store iface.Store, wg *sync.WaitGroup, errc chan error) {
 	defer wg.Done()
-	// ch := store.Replicator().Subscribe(ctx)
 
 	for {
+		fmt.Printf("%v\tprogress: %v\tbufferLen: %v\n", store.Address(), store.ReplicationStatus().GetProgress(), store.Replicator().GetBufferLen())
 		// v, ok := <-ch
 		// if !ok {
 		// 	break
@@ -106,10 +112,10 @@ func (p *Pinner) replicate(ctx context.Context, store iface.Store, wg *sync.Wait
 		// 	// last = entries[len(entries)-1]
 		// }
 		// first.GetHash()
-		fmt.Printf("%v\tprogress: %v\tbufferLen: %v\n", store.Address(), store.ReplicationStatus().GetProgress(), store.Replicator().GetBufferLen())
+
 		// fmt.Printf("%v\tprogress: %v\tbufferLen: %v\t\first:\ntime:%+v\thash:%v\nlast:\ntime:%+v\thash:%v\n", store.Address(), store.ReplicationStatus().GetProgress(), store.Replicator().GetBufferLen(), first.GetClock(), first.GetHash().Hash(), last.GetClock(), last.GetHash().Hash())
 
-		time.Sleep(60 * time.Second)
+		time.Sleep(10 * time.Second)
 
 	}
 	// store
