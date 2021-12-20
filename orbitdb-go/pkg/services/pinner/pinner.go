@@ -5,7 +5,7 @@ import (
 
 	"github.com/debridge-finance/orbitdb-go/pkg/log"
 	"github.com/debridge-finance/orbitdb-go/pkg/orbitdb"
-	"github.com/debridge-finance/orbitdb-go/pkg/pinner"
+	// "github.com/debridge-finance/orbitdb-go/pkg/pinner"
 )
 
 type Pinner struct {
@@ -13,13 +13,13 @@ type Pinner struct {
 	log log.Logger
 
 	Config Config
-	Pinner *pinner.Pinner
+	// Pinner *pinner.Pinner
 }
 
-func Create(ctx context.Context, c Config, l log.Logger, odb *orbitdb.OrbitDBProvider) (*Pinner, error) {
+func Create(ctx context.Context, c Config, l log.Logger, odb *orbitdb.OrbitDB) (*Pinner, error) {
 	l = l.With().Str("component", "pinner-service").Logger()
 
-	p := pinner.New(odb)
+	// p := pinner.New(odb)
 	// if err != nil {
 	// 	return nil, errors.Wrap(err, "failed to create new pinner")
 	// }
@@ -29,7 +29,7 @@ func Create(ctx context.Context, c Config, l log.Logger, odb *orbitdb.OrbitDBPro
 		ctx:    ctx,
 		log:    l,
 		Config: c,
-		Pinner: p,
+		// Pinner: p,
 	}, nil
 }
 
