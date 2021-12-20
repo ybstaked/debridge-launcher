@@ -1,4 +1,4 @@
-package eventlog
+package asset
 
 import (
 	"encoding/json"
@@ -10,7 +10,7 @@ import (
 )
 
 type GetRequest struct {
-	eventlog *eventlog.Eventlog // TODO: change to eventlog
+	submission *eventlog.Eventlog
 }
 
 type GetRequestResult struct {
@@ -43,7 +43,7 @@ func (h *GetRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *GetRequest) EventlogGet(hash string) (*GetRequestResult, error) {
-	vb, err := h.eventlog.Get(hash)
+	vb, err := h.submission.Get(hash)
 	if err != nil {
 		return nil, err
 	}
@@ -60,6 +60,6 @@ func (h *GetRequest) EventlogGet(hash string) (*GetRequestResult, error) {
 
 func CreateGetRequest(e *eventlog.Eventlog) (*GetRequest, error) {
 	return &GetRequest{
-		eventlog: e,
+		submission: e,
 	}, nil
 }

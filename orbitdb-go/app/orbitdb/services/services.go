@@ -13,9 +13,10 @@ type Services struct {
 	Config Config
 	Ctx    context.Context
 
-	IPFS     *si.IPFS
-	OrbitDB  *so.OrbitDB
-	Eventlog *se.Eventlog
+	IPFS       *si.IPFS
+	OrbitDB    *so.OrbitDB
+	Submission *se.Eventlog
+	Asset      *se.Eventlog
 }
 
 func Create(c Config, l log.Logger, ctx context.Context) (*Services, error) {
@@ -29,7 +30,11 @@ func Create(c Config, l log.Logger, ctx context.Context) (*Services, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create orbitdb services")
 	}
-	eventlog, err := se.Create(ctx, *c.Eventlog, l, orbitdb.OrbitDB)
+	submissions, err := se.Create(ctx, *c.Submission, l, orbitdb.OrbitDB)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to create orbitdb services")
+	}
+	assets, err := se.Create(ctx, *c.Asset, l, orbitdb.OrbitDB)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create orbitdb services")
 	}
@@ -38,8 +43,9 @@ func Create(c Config, l log.Logger, ctx context.Context) (*Services, error) {
 		Config: c,
 		Ctx:    ctx,
 
-		IPFS:     ipfs,
-		OrbitDB:  orbitdb,
-		Eventlog: eventlog,
+		IPFS:       ipfs,
+		OrbitDB:    orbitdb,
+		Submission: submissions,
+		Asset:      assets,
 	}, nil
 }

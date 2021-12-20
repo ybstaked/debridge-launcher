@@ -31,5 +31,9 @@ services:
     IPFSConfig: "./app/orbitdb/ipfs_config"
   orbitdb:
     repo: "./data/orbitdb/orbitdb"
-  eventlog:
+  submission:
     limit: -1
+    name: "submission"
+  asset:
+    limit: -1
+    name: "assets"

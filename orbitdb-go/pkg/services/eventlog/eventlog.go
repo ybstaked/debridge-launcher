@@ -62,6 +62,20 @@ func (e *Eventlog) Add(entry *Entry) (string, error) {
 
 	return h.GetEntry().GetHash().String(), nil
 }
+func (e *Eventlog) AddBinary(entry []byte) (string, error) {
+	ctx := context.Background()
+	// arr, err := json.Marshal(entry)
+	// if err != nil {
+	// 	return "", err
+	// }
+
+	h, err := e.Eventlog.Add(ctx, entry)
+	if err != nil {
+		return "", err
+	}
+
+	return h.GetEntry().GetHash().String(), nil
+}
 
 func (e *Eventlog) Get(hash string) ([]byte, error) {
 	ctx := context.Background()

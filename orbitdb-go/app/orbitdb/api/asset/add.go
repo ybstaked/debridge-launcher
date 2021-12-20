@@ -1,4 +1,4 @@
-package eventlog
+package asset
 
 import (
 	"encoding/json"

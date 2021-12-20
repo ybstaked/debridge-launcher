@@ -1,4 +1,4 @@
-package eventlog
+package submission
 
 var DefaultConfig = Config{}
 

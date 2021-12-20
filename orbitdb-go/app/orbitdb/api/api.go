@@ -1,8 +1,9 @@
 package api
 
 import (
+	"github.com/debridge-finance/orbitdb-go/app/orbitdb/api/asset"
 	"github.com/debridge-finance/orbitdb-go/app/orbitdb/api/auth"
-	"github.com/debridge-finance/orbitdb-go/app/orbitdb/api/eventlog"
+	submission "github.com/debridge-finance/orbitdb-go/app/orbitdb/api/submission"
 	"github.com/go-chi/jwtauth/v5"
 
 	"github.com/debridge-finance/orbitdb-go/app/orbitdb/services"
@@ -37,42 +38,81 @@ func Endpoints(handlers spec.HandlerRegistry) spec.Endpoints {
 			spec.EndpointConsumes(encodingMime),
 			spec.EndpointProduces(encodingMime),
 		),
-		spec.NewEndpoint("post", "/eventlog", "Add new entry to eventlog", //
-			spec.EndpointHandler(handlers.Get("eventlogAddReq")),
+		spec.NewEndpoint("post", "/submission", "Add new entry to submission", //
+			spec.EndpointHandler(handlers.Get("submissionAddReq")),
 			spec.EndpointDescription("This handler creates a request for token emission which awaits approval from operator role"),
-			spec.EndpointResponse(http.StatusCreated, eventlog.AddRequestResult{}, "Successfully created an eventlog ADD request"),
+			spec.EndpointResponse(http.StatusCreated, submission.AddRequestResult{}, "Successfully created an submission ADD request"),
 			spec.EndpointResponse(http.StatusBadRequest, http.Error{}, "Body parsing was failed"),
 			spec.EndpointResponse(http.StatusInternalServerError, http.Error{}, "Internal error occured while creating an orbitdb request"),
 			spec.EndpointTags("orbitdb"),
-			spec.EndpointBody(eventlog.AddRequestResult{}, "", true),
+			spec.EndpointBody(submission.AddRequestResult{}, "", true),
 			spec.EndpointConsumes(encodingMime),
 			spec.EndpointProduces(encodingMime),
 		),
-		spec.NewEndpoint("get", "/eventlog/{hash}", "Get entry from eventlog by hash",
-			spec.EndpointHandler(handlers.Get("eventlogGetReq")),
+		spec.NewEndpoint("get", "/submission/{hash}", "Get entry from submission by hash",
+			spec.EndpointHandler(handlers.Get("submissionGetReq")),
 			spec.EndpointDescription("Get submissionn by hash"),
-			spec.EndpointPath("hash", "string", "IPFS hash of entry, entry id in eventlog", true),
-			spec.EndpointResponse(http.StatusOk, eventlog.GetRequestResult{}, "Successful operation"),
+			spec.EndpointPath("hash", "string", "IPFS hash of entry, entry id in submission", true),
+			spec.EndpointResponse(http.StatusOk, submission.GetRequestResult{}, "Successful operation"),
 			spec.EndpointResponse(http.StatusInternalServerError, http.Error{}, "Internal error occured while creating a get submission by hash request"),
-			spec.EndpointBody(eventlog.GetRequestResult{}, "", true),
+			spec.EndpointBody(submission.GetRequestResult{}, "", true),
 			spec.EndpointConsumes(encodingMime),
 			spec.EndpointProduces(encodingMime),
 		),
-		spec.NewEndpoint("get", "/eventlog/stats", "Get eventlog stats",
-			spec.EndpointHandler(handlers.Get("eventlogStatsReq")),
-			spec.EndpointDescription("Get eventlog stats"),
-			spec.EndpointResponse(http.StatusOk, eventlog.StatsRequestResult{}, "Successful operation"),
+		spec.NewEndpoint("get", "/submission/stats", "Get submission stats",
+			spec.EndpointHandler(handlers.Get("submissionStatsReq")),
+			spec.EndpointDescription("Get submission stats"),
+			spec.EndpointResponse(http.StatusOk, submission.StatsRequestResult{}, "Successful operation"),
 			spec.EndpointResponse(http.StatusInternalServerError, http.Error{}, "Internal error occured while creating get stats request"),
-			spec.EndpointBody(eventlog.StatsRequestResult{}, "", true),
+			spec.EndpointBody(submission.StatsRequestResult{}, "", true),
 			spec.EndpointConsumes(encodingMime),
 			spec.EndpointProduces(encodingMime),
 		),
-		spec.NewEndpoint("get", "/eventlog/address", "Get eventlog address",
-			spec.EndpointHandler(handlers.Get("eventlogAddressReq")),
-			spec.EndpointDescription("Get eventlog address"),
-			spec.EndpointResponse(http.StatusOk, eventlog.StatsRequestResult{}, "Successful operation"),
+		spec.NewEndpoint("get", "/submission/address", "Get submission address",
+			spec.EndpointHandler(handlers.Get("submissionAddressReq")),
+			spec.EndpointDescription("Get submission address"),
+			spec.EndpointResponse(http.StatusOk, submission.StatsRequestResult{}, "Successful operation"),
 			spec.EndpointResponse(http.StatusInternalServerError, http.Error{}, "Internal error occured while creating get stats request"),
-			spec.EndpointBody(eventlog.StatsRequestResult{}, "", true),
+			spec.EndpointBody(submission.StatsRequestResult{}, "", true),
+			spec.EndpointConsumes(encodingMime),
+			spec.EndpointProduces(encodingMime),
+		),
+		spec.NewEndpoint("post", "/asset", "Add new entry to asset", //
+			spec.EndpointHandler(handlers.Get("assetAddReq")),
+			spec.EndpointDescription("This handler creates a request for token emission which awaits approval from operator role"),
+			spec.EndpointResponse(http.StatusCreated, asset.AddRequestResult{}, "Successfully created an asset ADD request"),
+			spec.EndpointResponse(http.StatusBadRequest, http.Error{}, "Body parsing was failed"),
+			spec.EndpointResponse(http.StatusInternalServerError, http.Error{}, "Internal error occured while creating an orbitdb request"),
+			spec.EndpointTags("orbitdb"),
+			spec.EndpointBody(asset.AddRequestResult{}, "", true),
+			spec.EndpointConsumes(encodingMime),
+			spec.EndpointProduces(encodingMime),
+		),
+		spec.NewEndpoint("get", "/asset/{hash}", "Get entry from asset by hash",
+			spec.EndpointHandler(handlers.Get("assetGetReq")),
+			spec.EndpointDescription("Get assetn by hash"),
+			spec.EndpointPath("hash", "string", "IPFS hash of entry, entry id in asset", true),
+			spec.EndpointResponse(http.StatusOk, asset.GetRequestResult{}, "Successful operation"),
+			spec.EndpointResponse(http.StatusInternalServerError, http.Error{}, "Internal error occured while creating a get asset by hash request"),
+			spec.EndpointBody(asset.GetRequestResult{}, "", true),
+			spec.EndpointConsumes(encodingMime),
+			spec.EndpointProduces(encodingMime),
+		),
+		spec.NewEndpoint("get", "/asset/stats", "Get asset stats",
+			spec.EndpointHandler(handlers.Get("assetStatsReq")),
+			spec.EndpointDescription("Get asset stats"),
+			spec.EndpointResponse(http.StatusOk, asset.StatsRequestResult{}, "Successful operation"),
+			spec.EndpointResponse(http.StatusInternalServerError, http.Error{}, "Internal error occured while creating get stats request"),
+			spec.EndpointBody(asset.StatsRequestResult{}, "", true),
+			spec.EndpointConsumes(encodingMime),
+			spec.EndpointProduces(encodingMime),
+		),
+		spec.NewEndpoint("get", "/asset/address", "Get asset address",
+			spec.EndpointHandler(handlers.Get("assetAddressReq")),
+			spec.EndpointDescription("Get asset address"),
+			spec.EndpointResponse(http.StatusOk, asset.StatsRequestResult{}, "Successful operation"),
+			spec.EndpointResponse(http.StatusInternalServerError, http.Error{}, "Internal error occured while creating get stats request"),
+			spec.EndpointBody(asset.StatsRequestResult{}, "", true),
 			spec.EndpointConsumes(encodingMime),
 			spec.EndpointProduces(encodingMime),
 		),
@@ -96,29 +136,56 @@ func Create(c Config, sc http.Config, l log.Logger, s *services.Services) (*API,
 	if err != nil {
 		return nil, wrapErr(err, "failed to create addReq")
 	}
-	eventlogAddReq, err := eventlog.CreateAddRequest(
-		*c.EventLog, l,
-		s.Eventlog,
+	submissionAddReq, err := submission.CreateAddRequest(
+		*c.Submission, l,
+		s.Submission,
 	)
 	if err != nil {
 		return nil, wrapErr(err, "failed to create addReq")
 	}
 
-	eventlogGetReq, err := eventlog.CreateGetRequest(
-		s.Eventlog,
+	submissionGetReq, err := submission.CreateGetRequest(
+		s.Submission,
 	)
 	if err != nil {
 		return nil, wrapErr(err, "failed to create getReq")
 	}
-	eventlogStatsReq, err := eventlog.CreateStatsRequest(
-		s.Eventlog,
+	submissionStatsReq, err := submission.CreateStatsRequest(
+		s.Submission,
 	)
 	if err != nil {
 		return nil, wrapErr(err, "failed to create statsReq")
 	}
-	eventlogAddressReq, err := eventlog.CreateAddressRequest(
-		s.Eventlog,
+	submissionAddressReq, err := submission.CreateAddressRequest(
+		s.Submission,
 	)
+	if err != nil {
+		return nil, wrapErr(err, "failed to create addressReq")
+	}
+	assetAddReq, err := asset.CreateAddRequest(
+		*c.Asset, l,
+		s.Asset,
+	)
+	if err != nil {
+		return nil, wrapErr(err, "failed to create addReq")
+	}
+
+	assetGetReq, err := asset.CreateGetRequest(
+		s.Asset,
+	)
+	if err != nil {
+		return nil, wrapErr(err, "failed to create getReq")
+	}
+	assetStatsReq, err := asset.CreateStatsRequest(
+		s.Asset,
+	)
+	if err != nil {
+		return nil, wrapErr(err, "failed to create statsReq")
+	}
+	assetAddressReq, err := asset.CreateAddressRequest(
+		s.Asset,
+	)
+
 	if err != nil {
 		return nil, wrapErr(err, "failed to create addressReq")
 	}
@@ -127,10 +194,14 @@ func Create(c Config, sc http.Config, l log.Logger, s *services.Services) (*API,
 
 	handlers.
 		Add("authReq", authReq).
-		Add("eventlogGetReq", eventlogGetReq).
-		Add("eventlogAddReq", eventlogAddReq).
-		Add("eventlogStatsReq", eventlogStatsReq).
-		Add("eventlogAddressReq", eventlogAddressReq)
+		Add("submissionGetReq", submissionGetReq).
+		Add("submissionAddReq", submissionAddReq).
+		Add("submissionStatsReq", submissionStatsReq).
+		Add("submissionAddressReq", submissionAddressReq).
+		Add("assetGetReq", assetGetReq).
+		Add("assetAddReq", assetAddReq).
+		Add("assetStatsReq", assetStatsReq).
+		Add("assetAddressReq", assetAddressReq)
 
 	//
 

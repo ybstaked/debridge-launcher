@@ -1,4 +1,4 @@
-package eventlog
+package asset
 
 import (
 	"github.com/debridge-finance/orbitdb-go/http"

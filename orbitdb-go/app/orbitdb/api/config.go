@@ -1,19 +1,22 @@
 package api
 
 import (
+	"github.com/debridge-finance/orbitdb-go/app/orbitdb/api/asset"
 	"github.com/debridge-finance/orbitdb-go/app/orbitdb/api/auth"
-	"github.com/debridge-finance/orbitdb-go/app/orbitdb/api/eventlog"
+	"github.com/debridge-finance/orbitdb-go/app/orbitdb/api/submission"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
 )
 
 var DefaultConfig = Config{
-	Auth:     &auth.DefaultConfig,
-	EventLog: &eventlog.DefaultConfig,
+	Auth:       &auth.DefaultConfig,
+	Submission: &submission.DefaultConfig,
+	Asset:      &asset.DefaultConfig,
 }
 
 type Config struct {
-	Auth     *auth.Config
-	EventLog *eventlog.Config
+	Auth       *auth.Config
+	Submission *submission.Config
+	Asset      *asset.Config
 }
 
 func (c *Config) SetDefaults() {
@@ -22,13 +25,15 @@ loop:
 		switch {
 		case c.Auth == nil:
 			c.Auth = DefaultConfig.Auth
-		case c.EventLog == nil:
-			c.EventLog = DefaultConfig.EventLog
+		case c.Submission == nil:
+			c.Submission = DefaultConfig.Submission
+		case c.Asset == nil:
+			c.Asset = DefaultConfig.Asset
 		default:
 			break loop
 		}
 	}
-	c.EventLog.SetDefaults()
+	c.Submission.SetDefaults()
 }
 
 func (c Config) Validate() error {
@@ -37,9 +42,9 @@ func (c Config) Validate() error {
 	}
 
 	var err error
-	err = c.EventLog.Validate()
+	err = c.Submission.Validate()
 	if err != nil {
-		return wrapErr(err, "eventlog")
+		return wrapErr(err, "submission")
 	}
 
 	return nil

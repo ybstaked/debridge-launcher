@@ -2,7 +2,7 @@ package eventlog
 
 var DefaultConfig = Config{
 	Repo:  "./data/orbitdb",
-	Name:  "debridge-eventlog",
+	Name:  "debridgeEventlog",
 	Limit: -1,
 }
 
