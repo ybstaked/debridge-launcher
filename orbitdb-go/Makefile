@@ -44,6 +44,6 @@ install:
 	go mod vendor
 
 
-.PHONY: docker-build
-docker-build: # build docker image
+.PHONY: build-docker-orbitdb
+build-docker-orbitdb: # build docker image
 	docker build -t $(IMAGE_REPOSITORY):$(SEMVER) .

@@ -28,7 +28,7 @@ api: {}
 services:
   ipfs:
     repo: "./data/orbitdb/"
-    IPFSConfig: "./app/orbitdb/ipfs_config"
+    IPFSConfig: "ipfs_config"
   orbitdb:
     repo: "./data/orbitdb/orbitdb"
   submission:

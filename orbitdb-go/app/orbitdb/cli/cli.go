@@ -25,7 +25,7 @@ var (
 			Aliases: []string{"c"},
 			// EnvVars: []string{config.Config.EnvPrefix + "_CONFIG"},
 			Usage: "path to service configuration file",
-			Value: "app/orbitdb/config.yml",
+			Value: "config.yml",
 		},
 		&cli.StringFlag{
 			Name:    "address",

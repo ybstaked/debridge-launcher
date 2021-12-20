@@ -4,6 +4,8 @@ services:
     image: postgres
     container_name: postgres${DOCKER_ID}
     restart: on-failure
+    ports:
+      - "5432:5432"
     env_file:
       - .env
     volumes:
@@ -12,17 +14,18 @@ services:
     networks:
       - debridge-node-network
   orbitdb:
-    build: orbitdb-go
+    image: debridgefinance/orbitdb:v0.1.0
     container_name: orbitdb${DOCKER_ID}
     restart: on-failure
-    volumes:
-      - ./data:/app/data
     ports:
-      - "3000:3000"
+      - "3000:3000" #TODO: remove port forwarding
+    volumes:
+      - ./orbitdb-go/data:/app/data
+      - ./orbitdb-go/app/orbitdb/config.yml:/app/config.yml
     networks:
       - debridge-node-network
   debridge-node:
-    image: debridgefinance/debridge-node:v1.1.2
+    build: debridge_node
     container_name: debridge-node${DOCKER_ID}
     command: node dist/src/main ${DEBRIDGE_NODE_NODE_OPTIONS}
     restart: on-failure
@@ -45,7 +48,6 @@ services:
       - API_BASE_URL=${API_BASE_URL}
       - API_LOGIN=${API_LOGIN}
       - API_PASSWORD=${API_PASSWORD}
-      - IPFS_URL=${IPFS_URL}
       - SENTRY_DSN=${SENTRY_DSN}
       - ORBITDB_LOGIN=${ORBITDB_LOGIN}
       - ORBITDB_PASSWORD=${ORBITDB_PASSWORD}

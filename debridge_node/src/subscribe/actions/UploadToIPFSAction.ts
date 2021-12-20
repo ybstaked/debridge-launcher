@@ -30,7 +30,7 @@ export class UploadToIPFSAction extends IAction {
     });
 
     for (const submission of submissions) {
-      const [logHash, doscHash] = await this.orbitDbService.addSignedSubmission(submission.submissionId, submission.signature, {
+      const logHash = await this.orbitDbService.addSignedSubmission(submission.submissionId, submission.signature, {
         txHash: submission.txHash,
         submissionId: submission.submissionId,
         chainFrom: submission.chainFrom,
@@ -40,7 +40,7 @@ export class UploadToIPFSAction extends IAction {
         amount: submission.amount,
         eventRaw: submission.rawEvent,
       });
-      this.logger.log(`uploaded ${submission.submissionId} ipfsLogHash: ${logHash} ipfsKeyHash: ${doscHash}`);
+      this.logger.log(`uploaded ${submission.submissionId} ipfsLogHash: ${logHash}`);
       await this.submissionsRepository.update(
         {
           submissionId: submission.submissionId,
@@ -48,7 +48,6 @@ export class UploadToIPFSAction extends IAction {
         {
           ipfsStatus: UploadStatusEnum.UPLOADED,
           ipfsLogHash: logHash,
-          ipfsKeyHash: doscHash,
         },
       );
     }
