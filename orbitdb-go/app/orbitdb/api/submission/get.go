@@ -1,26 +1,17 @@
 package submission
 
 import (
-	"encoding/json"
-
 	"github.com/debridge-finance/orbitdb-go/http"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
 
 	"github.com/debridge-finance/orbitdb-go/pkg/services/eventlog"
 )
 
-type GetRequest struct {
+type GetEntryRequest struct {
 	submission *eventlog.Eventlog
 }
 
-type GetRequestResult struct {
-	// Hash string `json:"hash"             swag_example:"zdpuA"  swag_description:"OrbitDB hash"`
-	SubmissionId string   `json:"submissionId"     swag_example:"f9872d1840D7322E4476C4C08c625Ab9E04d3960"`
-	Signature    string   `json:"signature"`
-	Payload      *Payload `json:"payload"  swag_description:"json with payload to create new asset confirmation"`
-}
-
-func (h *GetRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *GetEntryRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	hash := http.PathParam(r, "hash") // FIXME: length/content control?
 	res, err := h.EventlogGet(hash)
 	if err != nil {
@@ -34,32 +25,28 @@ func (h *GetRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	http.Write(
 		w, r, http.StatusOk,
-		&GetRequestResult{
-			SubmissionId: res.SubmissionId,
-			Signature:    res.Signature,
-			Payload:      res.Payload,
-		},
+		res,
 	)
 }
 
-func (h *GetRequest) EventlogGet(hash string) (*GetRequestResult, error) {
-	vb, err := h.submission.Get(hash)
+type GetEntryRequestResult = eventlog.EventlogSubmissionEntry
+
+func (h *GetEntryRequest) EventlogGet(hash string) (*GetEntryRequestResult, error) {
+	op, err := h.submission.GetEntryOp(hash)
 	if err != nil {
 		return nil, err
 	}
 
-	res := &GetRequestResult{}
-
-	err = json.Unmarshal(vb, res)
+	entry, err := h.submission.UnMarshalEventlogSubmissionEntry(op)
 	if err != nil {
-		return nil, errors.Wrapf(err, "failed to unmarshal: %v", vb)
+		return nil, errors.Wrapf(err, "failed to unmarshal entry: %v", op)
 	}
 
-	return res, nil
+	return entry, nil
 }
 
-func CreateGetRequest(e *eventlog.Eventlog) (*GetRequest, error) {
-	return &GetRequest{
+func CreateGetEntryRequest(e *eventlog.Eventlog) (*GetEntryRequest, error) {
+	return &GetEntryRequest{
 		submission: e,
 	}, nil
 }

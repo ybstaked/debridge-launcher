@@ -2,6 +2,7 @@ package submission
 
 import (
 	"github.com/debridge-finance/orbitdb-go/http"
+	"github.com/debridge-finance/orbitdb-go/pkg/berty.tech/go-ipfs-log/iface"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
 
 	"github.com/debridge-finance/orbitdb-go/pkg/services/eventlog"
@@ -12,11 +13,10 @@ type StatsRequest struct {
 }
 
 type StatsRequestResult struct {
-	// Hash string `json:"hash"             swag_example:"zdpuA"  swag_description:"OrbitDB hash"`
-	TotalOplog   int32  `json:"total_oplog"     swag_example:"f9872d1840D7322E4476C4C08c625Ab9E04d3960"`
-	TotalEntries int32  `json:"total_all_entries"     swag_example:"f9872d1840D7322E4476C4C08c625Ab9E04d3960"`
-	FirstKey     string `json:"first"     swag_example:"f9872d1840D7322E4476C4C08c625Ab9E04d3960"`
-	LastKey      string `json:"last"     swag_example:"f9872d1840D7322E4476C4C08c625Ab9E04d3960"`
+	TotalEntries int32          `json:"total_all_entries"     swag_example:"f9872d1840D7322E4476C4C08c625Ab9E04d3960"`
+	First        string         `json:"first"     swag_example:"bafyreibdlu2wo5gdxacru2tphlsqht43pullbesmt6tpbs3w35vjze4ja4"`
+	Latest       string         `json:"latest"     swag_example:"bafyreifdabdk5oozhsotwypzu24nchcioj5u3rioohxsbqzn6vw7yitbfi"`
+	JSONLog      *iface.JSONLog `json:"jsonLog"     swag_example:"bafyreifdabdk5oozhsotwypzu24nchcioj5u3rioohxsbqzn6vw7yitbfi"`
 }
 
 func (h *StatsRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -33,22 +33,24 @@ func (h *StatsRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	http.Write(
 		w, r, http.StatusOk,
 		&StatsRequestResult{
-			TotalOplog:   res.TotalOplog,
 			TotalEntries: res.TotalEntries,
-			FirstKey:     res.FirstKey,
-			LastKey:      res.LastKey,
+			First:        res.First,
+			Latest:       res.Latest,
+			JSONLog:      res.JSONLog,
 		},
 	)
 }
+
+// func
 
 func (h *StatsRequest) EventlogStats() (*StatsRequestResult, error) {
 	total := h.eventlog.GetStats()
 
 	return &StatsRequestResult{
-		TotalOplog:   int32(total.TotalOplog),
 		TotalEntries: int32(total.TotalEntries),
-		FirstKey:     total.FirstKey,
-		LastKey:      total.LastKey,
+		First:        total.First,
+		Latest:       total.Latest,
+		JSONLog:      total.JSONLog,
 	}, nil
 }
 

@@ -50,12 +50,12 @@ func Endpoints(handlers spec.HandlerRegistry) spec.Endpoints {
 			spec.EndpointProduces(encodingMime),
 		),
 		spec.NewEndpoint("get", "/submission/{hash}", "Get entry from submission by hash",
-			spec.EndpointHandler(handlers.Get("submissionGetReq")),
-			spec.EndpointDescription("Get submissionn by hash"),
+			spec.EndpointHandler(handlers.Get("submissionGetEntryReq")),
+			spec.EndpointDescription("Get submission entry by hash"),
 			spec.EndpointPath("hash", "string", "IPFS hash of entry, entry id in submission", true),
-			spec.EndpointResponse(http.StatusOk, submission.GetRequestResult{}, "Successful operation"),
+			spec.EndpointResponse(http.StatusOk, submission.GetEntryRequestResult{}, "Successful operation"),
 			spec.EndpointResponse(http.StatusInternalServerError, http.Error{}, "Internal error occured while creating a get submission by hash request"),
-			spec.EndpointBody(submission.GetRequestResult{}, "", true),
+			spec.EndpointBody(submission.GetEntryRequestResult{}, "", true),
 			spec.EndpointConsumes(encodingMime),
 			spec.EndpointProduces(encodingMime),
 		),
@@ -144,7 +144,7 @@ func Create(c Config, sc http.Config, l log.Logger, s *services.Services) (*API,
 		return nil, wrapErr(err, "failed to create addReq")
 	}
 
-	submissionGetReq, err := submission.CreateGetRequest(
+	submissionGetEntryReq, err := submission.CreateGetEntryRequest(
 		s.Submission,
 	)
 	if err != nil {
@@ -194,7 +194,7 @@ func Create(c Config, sc http.Config, l log.Logger, s *services.Services) (*API,
 
 	handlers.
 		Add("authReq", authReq).
-		Add("submissionGetReq", submissionGetReq).
+		Add("submissionGetEntryReq", submissionGetEntryReq).
 		Add("submissionAddReq", submissionAddReq).
 		Add("submissionStatsReq", submissionStatsReq).
 		Add("submissionAddressReq", submissionAddressReq).

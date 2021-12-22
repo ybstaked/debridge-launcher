@@ -1,8 +1,6 @@
 package asset
 
 import (
-	"encoding/json"
-
 	"github.com/debridge-finance/orbitdb-go/http"
 	"github.com/debridge-finance/orbitdb-go/pkg/errors"
 
@@ -33,28 +31,24 @@ func (h *GetRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	http.Write(
 		w, r, http.StatusOk,
-		&GetRequestResult{
-			DeployId:  res.DeployId,
-			Signature: res.Signature,
-			Payload:   res.Payload,
-		},
+		res,
 	)
 }
 
-func (h *GetRequest) EventlogGet(hash string) (*GetRequestResult, error) {
-	vb, err := h.asset.Get(hash)
+type GetEntryRequestResult = eventlog.EventlogAssetEntry
+
+func (h *GetRequest) EventlogGet(hash string) (*GetEntryRequestResult, error) {
+	op, err := h.asset.GetEntryOp(hash)
 	if err != nil {
 		return nil, err
 	}
 
-	res := &GetRequestResult{}
-
-	err = json.Unmarshal(vb, res)
+	entry, err := h.asset.UnMarshalEventlogAssetEntry(op)
 	if err != nil {
-		return nil, errors.Wrapf(err, "failed to unmarshal: %v", vb)
+		return nil, errors.Wrapf(err, "failed to unmarshal entry: %v", op)
 	}
 
-	return res, nil
+	return entry, nil
 }
 
 func CreateGetRequest(e *eventlog.Eventlog) (*GetRequest, error) {
