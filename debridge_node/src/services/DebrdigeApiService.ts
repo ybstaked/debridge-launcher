@@ -51,9 +51,9 @@ export class DebrdigeApiService extends HttpAuthService implements OnModuleInit 
   }
 
   async updateOrbitDb(requestBody: UpdateOrbirDbDTO) {
-    this.logger.log(`updateOrbitDb ${requestBody} is started`);
+    this.logger.log(`updateOrbitDb ${JSON.stringify(requestBody)} is started`);
     const httpResult = await this.authRequest('/Validator/updateOrbitDb', requestBody, this.getLoginDto());
-    this.logger.verbose(`response: ${httpResult.data}`);
+    this.logger.verbose(`response: ${JSON.stringify(httpResult.data)}`);
     this.logger.log(`updateOrbitDb is finished`);
   }
 

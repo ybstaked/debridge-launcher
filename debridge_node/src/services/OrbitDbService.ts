@@ -4,7 +4,7 @@ import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { UserLoginDto } from '../api/auth/user.login.dto';
 import { HttpAuthService } from './HttpAuthService';
-import { GetNamesResponseDTO } from '../dto/orbitdb/output/GetNamesResponseDTO';
+import { GetAddressResponseDTO } from '../dto/orbitdb/output/GetAddressResponseDTO';
 import { AddDocsConfirmNewAssetsRequestDTO } from '../dto/orbitdb/input/AddDocsConfirmNewAssetsRequestDTO';
 import { AddDocsSignedSubmissionRequestDTO } from '../dto/orbitdb/input/AddDocsSignedSubmissionRequestDTO';
 import { AddLogConfirmNewAssetsRequestDTO } from '../dto/orbitdb/input/AddLogConfirmNewAssetsRequestDTO';
@@ -35,16 +35,20 @@ export class OrbitDbService extends HttpAuthService implements OnModuleInit {
       this.logger.log(`updateOrbitDbInterval interval is started`);
       const updateOrbitDbInterval = setInterval(async () => {
         this.logger.verbose(`updateOrbitDbInterval is working`);
-        let response: GetNamesResponseDTO;
+        let responseSubmission: GetAddressResponseDTO;
+        let responseAsset: GetAddressResponseDTO;
         try {
-          response = (await this.authRequest('/api/submission/address', {})).data as GetNamesResponseDTO;
+          responseSubmission = (await this.authRequest('/api/submission/address', {})).data as GetAddressResponseDTO;
+          responseAsset = (await this.authRequest('/api/asset/address', {})).data as GetAddressResponseDTO;
+
         } catch (e) {
           this.logger.error(`Error in getNames orbitdb request ${e.message}`);
         }
-        const orbitLogsDb = response?.orbitLogsDb;
-        // TODO:d1r1 remove docs db everywhere
-        const orbitDocsDb = orbitLogsDb;
+        const orbitLogsDb = responseSubmission?.address;
+        const orbitDocsDb = responseAsset?.address; // TODO:d1r1 rename orbitDocsDb to assetAddress after discuss consumer interface with Yaroslav
+
         if (orbitDocsDb && orbitLogsDb) {
+
           try {
             await this.debrdigeApiService.updateOrbitDb({ orbitDocsDb, orbitLogsDb, nodeVersion: version });
             clearInterval(updateOrbitDbInterval);

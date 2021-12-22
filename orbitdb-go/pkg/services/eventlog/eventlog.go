@@ -115,8 +115,8 @@ type Stats struct {
 func (e *Eventlog) GetStats() *Stats {
 	oplog := e.Eventlog.OpLog()
 	allEntries := oplog.GetEntries()
-	first := allEntries.At(uint(allEntries.Len() - 1))
-	latest := allEntries.At(0)
+	first := allEntries.At(0)
+	latest := allEntries.At(uint(allEntries.Len() - 1))
 	jsonLog := oplog.ToJSONLog()
 
 	return &Stats{
