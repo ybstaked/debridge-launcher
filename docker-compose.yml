@@ -14,7 +14,7 @@ services:
     networks:
       - debridge-node-network
   orbitdb:
-    image: debridgefinance/orbitdb:v0.1.0
+    image: debridgefinance/orbitdb-go:v0.1.1
     container_name: orbitdb${DOCKER_ID}
     restart: on-failure
     ports:

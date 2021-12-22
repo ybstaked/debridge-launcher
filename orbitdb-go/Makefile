@@ -10,7 +10,7 @@ IMAGE_REPOSITORY  ?= docker.io/$(PROJECT)/$(NAME)
 IMAGE_TAG         ?= $(VERSION)
 DOCKER_USER       ?=
 DOCKER_PASSWORD   ?=
-SEMVER    		  ?= v0.1.0
+SEMVER    		  ?= v0.1.1
 
 
 K8S_CLUSTER   ?= kubernetes-$(ENV)
