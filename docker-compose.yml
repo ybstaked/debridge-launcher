@@ -19,6 +19,10 @@ services:
     restart: on-failure
     ports:
       - "3000:3000" #TODO: remove port forwarding
+    environment:
+      - ORBITDB_API_SERVER_MIDDLEWARES_AUTH_USERNAME=${ORBITDB_LOGIN}
+      - ORBITDB_API_SERVER_MIDDLEWARES_AUTH_PASSWORD=${ORBITDB_PASSWORD}
+      - ORBITDB_API_SERVER_MIDDLEWARES_AUTH_JWT=${ORBITDB_JWT_SECRET}
     volumes:
       - ./orbitdb-go/data:/app/data
       - ./orbitdb-go/app/orbitdb/config.yml:/app/config.yml
